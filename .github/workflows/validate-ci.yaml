@@ -1,0 +1,38 @@
+on:
+  workflow_call:
+    inputs:
+      event_name:
+        required: true
+        type: string
+        description: 'The name of the event that triggered the workflow'
+      base_ref:
+        required: true
+        type: string
+        description: 'The base branch of the pull request'
+      head_ref:
+        required: true
+        type: string
+        description: 'The head branch of the pull request'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-branch:
+    name: Validate Branch Name
+    if: inputs.event_name == 'pull_request' && inputs.base_ref == 'master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch naming convention
+        run: |
+          BRANCH_NAME="${{ inputs.head_ref }}"
+          echo "PR branch: $BRANCH_NAME"
+          echo "Base branch: ${{ inputs.base_ref }}"
+
+          if [[ ! "$BRANCH_NAME" =~ ^ZEM- ]] && [[ ! "$BRANCH_NAME" =~ ^release/ ]]; then
+            echo "::error::Pull requests to master branch must come from branches starting with 'ZEM-' or 'release/'"
+            echo "::error::Current branch: $BRANCH_NAME"
+            exit 1
+          fi
+
+          echo "✅ Branch name is valid"

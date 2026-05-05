@@ -1,0 +1,26 @@
+on:
+  workflow_call:
+    inputs:
+      github_ref:
+        description: 'The git reference branch that triggered the workflow'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch
+        if: inputs.github_ref != 'refs/heads/master'
+        run: |
+          echo "Error: This workflow can only be triggered on the master branch"
+          exit 1
+
+      - name: Check user authorization
+        if: github.actor != 'mohitric'
+        run: |
+          echo "Error: Only user 'mohitric' is allowed to trigger this workflow"
+          exit 1
