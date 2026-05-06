@@ -68,6 +68,7 @@ export function LoginPage() {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  trailing="test"
                   trailingTab={
                     <div className="flex items-center gap-1 px-3 py-2">
                       <span className="text-sm font-medium text-subtler">
