@@ -189,72 +189,106 @@
 
 ### Font Family (`fontFamily`)
 
-> No Figma variables found for font family — these are set directly in Tailwind config.
-
 | Figma token | Tailwind path | Resolved value |
 |---|---|---|
-| _(none)_ | `fontFamily.body` | `Inter, …sans` |
-| _(none)_ | `fontFamily.heading` | `Favorit, …serif` |
-| _(none)_ | `fontFamily.number` | `JetBrains Mono, …mono` |
+| `font/family/Body` | `fontFamily.body` | `Inter, …sans` |
+| `font/family/Heading` | `fontFamily.heading` | `Favorit, …serif` |
+| `font/family/Number` | `fontFamily.number` | `JetBrains Mono, …mono` |
 
 ### Font Size (`fontSize`)
 
-> No Figma variables found for font size — these are set directly in Tailwind config.
-
 | Figma token | Tailwind path | Resolved value |
 |---|---|---|
-| _(none)_ | `fontSize.xs` | `0.75rem` (12px) |
-| _(none)_ | `fontSize.sm` | `0.875rem` (14px) |
-| _(none)_ | `fontSize.base` | `1rem` (16px) |
-| _(none)_ | `fontSize.lg` | `1.125rem` (18px) |
-| _(none)_ | `fontSize.xl` | `1.25rem` (20px) |
-| _(none)_ | `fontSize.2xl` | `1.5rem` (24px) |
-| _(none)_ | `fontSize.3xl` | `1.875rem` (30px) |
-| _(none)_ | `fontSize.4xl` | `2.25rem` (36px) |
-| _(none)_ | `fontSize.5xl` | `3rem` (48px) |
-| _(none)_ | `fontSize.6xl` | `3.75rem` (60px) |
-| _(none)_ | `fontSize.7xl` | `4.5rem` (72px) |
+| `font/size/xs` | `fontSize.xs` | `0.75rem` (12px) |
+| `font/size/sm` | `fontSize.sm` | `0.875rem` (14px) |
+| `font/size/base` | `fontSize.base` | `1rem` (16px) |
+| `font/size/lg` | `fontSize.lg` | `1.125rem` (18px) |
+| `font/size/xl` | `fontSize.xl` | `1.25rem` (20px) |
+| `font/size/2xl` | `fontSize.2xl` | `1.5rem` (24px) |
+| `font/size/3xl` | `fontSize.3xl` | `1.875rem` (30px) |
+| `font/size/4xl` | `fontSize.4xl` | `2.25rem` (36px) |
+| `font/size/5xl` | `fontSize.5xl` | `3rem` (48px) |
+| `font/size/6xl` | `fontSize.6xl` | `3.75rem` (60px) |
+| `font/size/7xl` | `fontSize.7xl` | `4.5rem` (72px) |
+
+### Font Weight
+
+> Figma stores these as STRING variables with font style names. They map to Tailwind's default `fontWeight` utilities — no custom theme extension needed.
+
+| Figma token | Figma value | Tailwind utility | CSS value |
+|---|---|---|---|
+| `font/weight/normal` | `"Regular"` | `font-normal` | `400` |
+| `font/weight/medium` | `"Medium"` | `font-medium` | `500` |
+| `font/weight/semibold` | `"Semibold"` | `font-semibold` | `600` |
+| `font/weight/bold` | `"Bold"` | `font-bold` | `700` |
 
 ### Line Height (`lineHeight`)
 
+> `font/lineHeight/leading-7` (28px) does **not** exist in the Figma Foundation file — `lineHeight.7` is code-only.
+
 | Figma token | Tailwind path | Resolved value |
 |---|---|---|
+| `font/lineHeight/leading-2` | `lineHeight.2` → `leading-2` | `1rem` (16px) |
+| `font/lineHeight/leading-3` | `lineHeight.3` → `leading-3` | `1.125rem` (18px) |
+| `font/lineHeight/leading-4` | `lineHeight.4` → `leading-4` | `1.25rem` (20px) |
 | `font/lineHeight/leading-5` | `lineHeight.5` → `leading-5` | `1.5rem` (24px) |
-| `font/lineHeight/leading-7` | `lineHeight.7` → `leading-7` | `1.75rem` (28px) |
 | `font/lineHeight/leading-9` | `lineHeight.9` → `leading-9` | `2.25rem` (36px) |
-| _(none)_ | `lineHeight.2` → `leading-2` | `1rem` (16px) |
-| _(none)_ | `lineHeight.3` → `leading-3` | `1.125rem` (18px) |
-| _(none)_ | `lineHeight.4` → `leading-4` | `1.25rem` (20px) |
+| _(none — code-only)_ | `lineHeight.7` → `leading-7` | `1.75rem` (28px) |
 
 ### Letter Spacing (`letterSpacing`)
 
-| Figma token | Tailwind path | Resolved value |
-|---|---|---|
-| `font/letterSpacing/dense` | `letterSpacing.dense` → `tracking-dense` | `-0.01875em` |
-| `font/letterSpacing/denser` | `letterSpacing.denser` → `tracking-denser` | `-0.025em` |
-| _(none)_ | `letterSpacing.sparse` → `tracking-sparse` | `0.0375em` |
-| _(none)_ | `letterSpacing.sparser` → `tracking-sparser` | `0.125em` |
+> Figma stores these as FLOAT values in **px**. Tailwind uses **em** at a 16px base — values are equivalent.
+
+| Figma token | Figma value (px) | Tailwind path | Resolved value (em) |
+|---|---|---|---|
+| `font/letterSpacing/dense` | `-0.3px` | `letterSpacing.dense` → `tracking-dense` | `-0.01875em` |
+| `font/letterSpacing/denser` | `-0.4px` | `letterSpacing.denser` → `tracking-denser` | `-0.025em` |
+| `font/letterSpacing/sparse` | `0.6px` | `letterSpacing.sparse` → `tracking-sparse` | `0.0375em` |
+| `font/letterSpacing/sparser` | `2px` | `letterSpacing.sparser` → `tracking-sparser` | `0.125em` |
 
 ---
 
 ## 7. Spacing
 
-> Figma `spacing/N` tokens map to Tailwind's default 4px-base spacing scale (`p-N`, `m-N`, `gap-N`, `w-N`, `h-N`). The Tailwind theme does not override spacing, so these resolve via the default scale.
+> Figma `spacing/N` tokens map to Tailwind's default 4px-base spacing scale. Fractional names (`0-5`, `1-5`, `2-5`, `3-5`) map to Tailwind's decimal utilities (`0.5`, `1.5`, `2.5`, `3.5`). `spacing/px` maps to `p-px` (1px).
 
 | Figma token | Tailwind utility | Resolved value |
 |---|---|---|
 | `spacing/0` | `p-0` / `gap-0` | `0px` |
+| `spacing/px` | `p-px` / `gap-px` | `1px` |
+| `spacing/0-5` | `p-0.5` / `gap-0.5` | `2px` |
 | `spacing/1` | `p-1` / `gap-1` | `4px` |
+| `spacing/1-5` | `p-1.5` / `gap-1.5` | `6px` |
+| `spacing/2` | `p-2` / `gap-2` | `8px` |
+| `spacing/2-5` | `p-2.5` / `gap-2.5` | `10px` |
 | `spacing/3` | `p-3` / `gap-3` | `12px` |
+| `spacing/3-5` | `p-3.5` / `gap-3.5` | `14px` |
 | `spacing/4` | `p-4` / `gap-4` | `16px` |
+| `spacing/5` | `p-5` / `gap-5` | `20px` |
 | `spacing/6` | `p-6` / `gap-6` | `24px` |
 | `spacing/7` | `p-7` / `gap-7` | `28px` |
 | `spacing/8` | `p-8` / `gap-8` | `32px` |
 | `spacing/9` | `p-9` / `gap-9` | `36px` |
+| `spacing/10` | `p-10` / `gap-10` | `40px` |
+| `spacing/11` | `p-11` / `gap-11` | `44px` |
+| `spacing/12` | `p-12` / `gap-12` | `48px` |
 | `spacing/14` | `p-14` / `gap-14` | `56px` |
+| `spacing/16` | `p-16` / `gap-16` | `64px` |
 | `spacing/20` | `p-20` / `gap-20` | `80px` |
+| `spacing/24` | `p-24` / `gap-24` | `96px` |
 | `spacing/28` | `p-28` / `gap-28` | `112px` |
+| `spacing/32` | `p-32` / `gap-32` | `128px` |
+| `spacing/36` | `p-36` / `gap-36` | `144px` |
+| `spacing/40` | `p-40` / `gap-40` | `160px` |
+| `spacing/44` | `p-44` / `gap-44` | `176px` |
+| `spacing/48` | `p-48` / `gap-48` | `192px` |
+| `spacing/52` | `p-52` / `gap-52` | `208px` |
+| `spacing/56` | `p-56` / `gap-56` | `224px` |
+| `spacing/60` | `p-60` / `gap-60` | `240px` |
+| `spacing/64` | `p-64` / `gap-64` | `256px` |
 | `spacing/72` | `p-72` / `gap-72` | `288px` |
+| `spacing/80` | `p-80` / `gap-80` | `320px` |
+| `spacing/96` | `p-96` / `gap-96` | `384px` |
 
 ---
 
@@ -291,6 +325,100 @@
 | _(none)_ | `boxShadow.hard-sm` | `0px 2px 5px -2px rgba(16,25,40,0.06), 0px 2px 7px 0px rgba(16,25,40,0.05), 0px 0px 0px 1px rgba(16,25,40,0.05)` |
 | _(none)_ | `boxShadow.hard-md` | `0px 0px 0px 1px rgba(16,25,40,0.05), 0px 6px 16px 0px rgba(16,25,40,0.08)` |
 | _(none)_ | `boxShadow.hard-lg` | `0px 16px 24px -6px rgba(16,25,40,0.08), 0px 0px 3px -1px rgba(16,25,40,0.04), 0px 0px 0px 1px rgba(16,25,40,0.05)` |
+
+---
+
+## 10. Width
+
+> Container-width tokens. Smaller values (`3xs`–`sm`) map to Tailwind's spacing-based `w-*` utilities; larger values (`md`–`7xl`) map to `max-w-*`.
+
+| Figma token | Tailwind utility | Resolved value |
+|---|---|---|
+| `width/0` | `w-0` | `0px` |
+| `width/3xs` | `w-64` | `256px` |
+| `width/2xs` | `w-72` | `288px` |
+| `width/xs` | `w-80` | `320px` |
+| `width/sm` | `w-96` / `max-w-sm` | `384px` |
+| `width/md` | `max-w-md` | `448px` |
+| `width/lg` | `max-w-lg` | `512px` |
+| `width/xl` | `max-w-xl` | `576px` |
+| `width/2xl` | `max-w-2xl` | `672px` |
+| `width/3xl` | `max-w-3xl` | `768px` |
+| `width/4xl` | `max-w-4xl` | `896px` |
+| `width/5xl` | `max-w-5xl` | `1024px` |
+| `width/6xl` | `max-w-6xl` | `1152px` |
+| `width/7xl` | `max-w-7xl` | `1280px` |
+
+---
+
+## 11. Opacity
+
+> Figma stores opacity as 0–100 integer. Tailwind's `opacity-{N}` utilities use the same scale.
+
+| Figma token | Tailwind utility | Resolved value |
+|---|---|---|
+| `opacity/0` | `opacity-0` | `0%` |
+| `opacity/5` | `opacity-5` | `5%` |
+| `opacity/10` | `opacity-10` | `10%` |
+| `opacity/15` | `opacity-15` | `15%` |
+| `opacity/20` | `opacity-20` | `20%` |
+| `opacity/25` | `opacity-25` | `25%` |
+| `opacity/30` | `opacity-30` | `30%` |
+| `opacity/35` | `opacity-35` | `35%` |
+| `opacity/40` | `opacity-40` | `40%` |
+| `opacity/45` | `opacity-45` | `45%` |
+| `opacity/50` | `opacity-50` | `50%` |
+| `opacity/55` | `opacity-55` | `55%` |
+| `opacity/60` | `opacity-60` | `60%` |
+| `opacity/65` | `opacity-65` | `65%` |
+| `opacity/70` | `opacity-70` | `70%` |
+| `opacity/75` | `opacity-75` | `75%` |
+| `opacity/80` | `opacity-80` | `80%` |
+| `opacity/85` | `opacity-85` | `85%` |
+| `opacity/90` | `opacity-90` | `90%` |
+| `opacity/95` | `opacity-95` | `95%` |
+| `opacity/100` | `opacity-100` | `100%` |
+
+---
+
+## 12. Border Width
+
+| Figma token | Tailwind utility | Resolved value |
+|---|---|---|
+| `border/0` | `border-0` | `0px` |
+| `border/1` | `border` | `1px` |
+| `border/2` | `border-2` | `2px` |
+| `border/4` | `border-4` | `4px` |
+| `border/8` | `border-8` | `8px` |
+
+---
+
+## 13. Blur
+
+| Figma token | Tailwind utility | Resolved value |
+|---|---|---|
+| `blur/none` | `blur-none` | `0px` |
+| `blur/sm` | `blur-sm` | `4px` |
+| `blur/DEFAULT` | `blur` | `8px` |
+| `blur/md` | `blur-md` | `12px` |
+| `blur/lg` | `blur-lg` | `16px` |
+| `blur/xl` | `blur-xl` | `24px` |
+| `blur/2xl` | `blur-2xl` | `40px` |
+| `blur/3xl` | `blur-3xl` | `64px` |
+
+---
+
+## 14. Breakpoints
+
+> Figma breakpoint tokens map to Tailwind's responsive prefix modifiers. Use as `sm:`, `md:`, etc.
+
+| Figma token | Tailwind modifier | Resolved value |
+|---|---|---|
+| `breakpoint/sm` | `sm:` | `640px` |
+| `breakpoint/md` | `md:` | `768px` |
+| `breakpoint/lg` | `lg:` | `1024px` |
+| `breakpoint/xl` | `xl:` | `1280px` |
+| `breakpoint/2xl` | `2xl:` | `1536px` |
 
 ---
 
@@ -350,19 +478,13 @@ These theme values are defined in `tailwind.theme.ts` but have no corresponding 
 | `colors.spinner.front-onIntense` | `rgba(0,0,0,0.6)` | No Figma token |
 | `colors.spinner.front-onLight` | `rgba(0,0,0,0.4)` | No Figma token |
 
-### Typography (no Figma variables)
+### Typography (code-only — no Figma variable)
+
+> Font families, sizes, weights, most line heights, and all letter spacings are now confirmed in the Figma Foundation file. Only the entry below is code-only.
 
 | Tailwind path | Resolved value | Notes |
 |---|---|---|
-| `fontFamily.body` | `Inter, …sans` | Set in code only |
-| `fontFamily.heading` | `Favorit, …serif` | Set in code only |
-| `fontFamily.number` | `JetBrains Mono, …mono` | Set in code only |
-| `fontSize.xs` – `fontSize.7xl` | 0.75rem – 4.5rem | No Figma size variables |
-| `lineHeight.2` | `1rem` | Not in Figma |
-| `lineHeight.3` | `1.125rem` | Not in Figma |
-| `lineHeight.4` | `1.25rem` | Not in Figma |
-| `letterSpacing.sparse` | `0.0375em` | Not in Figma |
-| `letterSpacing.sparser` | `0.125em` | Not in Figma |
+| `lineHeight.7` | `1.75rem` (28px) | Not in Figma Foundation — `font/lineHeight/leading-7` does not exist |
 
 ### Box Shadows (no Figma variables)
 
@@ -379,9 +501,16 @@ All 8 shadow tokens (`soft-xs`, `soft-sm`, `soft-md`, `soft-lg`, `soft-xl`, `har
 | Border | 16 | 15 | 1 (border-gray) | 6 (bold variants + 2 accent) |
 | Outline | 1 | 1 | 0 | 2 (positive-bold, negative-bold) |
 | Icon | 17 | 17 | 0 | 0 |
-| Line Height | 3 | 3 | 0 | 3 (leading-2/3/4) |
-| Letter Spacing | 2 | 2 | 0 | 2 (sparse, sparser) |
-| Spacing | 12 | 12 | 0 | — (uses Tailwind default scale) |
+| Font Family | 3 | 3 | 0 | 0 |
+| Font Size | 11 | 11 | 0 | 0 |
+| Font Weight | 4 | 4 | 0 | 0 |
+| Line Height | 5 | 5 | 0 | 1 (leading-7) |
+| Letter Spacing | 4 | 4 | 0 | 0 |
+| Spacing | 35 | 35 | 0 | — (uses Tailwind default scale) |
 | Border Radius | 10 | 9 | 0 | 1 (rounded-4xl needs config) |
 | Box Shadows | 0 | 0 | 0 | 8 (all code-only) |
-| Font Family / Size | 0 | 0 | 0 | 14 (all code-only) |
+| Width | 14 | 14 | 0 | 0 |
+| Opacity | 21 | 21 | 0 | 0 |
+| Border Width | 5 | 5 | 0 | 0 |
+| Blur | 8 | 8 | 0 | 0 |
+| Breakpoints | 5 | 5 | 0 | 0 |

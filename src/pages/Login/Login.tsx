@@ -10,7 +10,7 @@ export function LoginPage() {
 
   return (
     /* Page */
-    <div className="bg-subtle flex min-h-screen items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center bg-[#f6f6f8]">
       {/* Card */}
       <Card variant="default" elevation="flat" className="w-96 p-10">
         {/* Content */}
@@ -38,6 +38,21 @@ export function LoginPage() {
                   placeholder="Enter your email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  leadingTab={
+                    <div className="flex items-center gap-1 px-3 py-2">
+                      <span className="text-sm font-medium text-subtler">
+                        US
+                      </span>
+                      <span className="mui-icon material-symbols-rounded text-base text-subtler">
+                        keyboard_arrow_down
+                      </span>
+                    </div>
+                  }
+                  leadingIcon={
+                    <span className="mui-icon material-symbols-rounded">
+                      mail
+                    </span>
+                  }
                 />
               </InputRoot>
             </div>
@@ -53,14 +68,44 @@ export function LoginPage() {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  trailingTab={
+                    <div className="flex items-center gap-1 px-3 py-2">
+                      <span className="text-sm font-medium text-subtler">
+                        USD
+                      </span>
+                      <span className="mui-icon material-symbols-rounded text-base text-subtler">
+                        keyboard_arrow_down
+                      </span>
+                    </div>
+                  }
                 />
               </InputRoot>
+              {/* Helper text row */}
+              <div className="flex w-full items-start gap-1">
+                <div className="flex w-3 shrink-0 items-center py-0.5">
+                  <span className="mui-icon material-symbols-rounded text-xs text-subtle">
+                    info
+                  </span>
+                </div>
+                <p className="flex-1 text-xs font-normal leading-4 text-subtle">
+                  this is the helper text
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Sign In Button */}
-          <Button variant="brand" type="submit" className="w-full">
+          {/* UPDATED: Added leading icon (add) and trailing icon (arrow_forward) */}
+          <Button
+            variant="brand"
+            type="submit"
+            className="w-full justify-center"
+          >
+            <span className="mui-icon material-symbols-rounded">add</span>
             Sign in
+            <span className="mui-icon material-symbols-rounded">
+              arrow_forward
+            </span>
           </Button>
 
           {/* Footer */}

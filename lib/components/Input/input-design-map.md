@@ -190,25 +190,53 @@ This component does **not** use CVA. Classes are applied directly.
 
 ---
 
+### Component split — which props go where
+
+> ⚠️ **Critical usage note:** `InputRoot` and `Input` are two separate components with distinct prop sets. All slot props (`leadingTab`, `trailingTab`, `leadingIcon`, `leading`, `trailing`) belong on **`Input`**, not on `InputRoot`. Passing them to `InputRoot` silently drops them — they spread into `...props` as unknown HTML attributes and never render.
+
+**Correct pattern:**
+```tsx
+<InputRoot>                        {/* handles focus ring, validation outline, disabled cursor */}
+  <Input
+    leadingTab={<MyTab />}         {/* ✓ slot props on Input */}
+    leadingIcon={<MyIcon />}
+    trailing="USD"
+    trailingTab={<MyTrailingTab />}
+    placeholder="Enter value"
+    value={value}
+    onChange={...}
+  />
+</InputRoot>
+```
+
+**Wrong pattern (tabs will not render):**
+```tsx
+<InputRoot leadingTab={<MyTab />}> {/* ✗ InputRoot has no leadingTab prop */}
+  <Input />
+</InputRoot>
+```
+
+---
+
 ### Prop mapping
 
-| Figma variant / prop | React prop | Type | Default | Notes |
-|---|---|---|---|---|
-| `state: Placeholder` | _(no prop)_ | — | — | CSS `:placeholder-shown` / default; no React prop |
-| `state: Hover` | _(no prop)_ | — | — | CSS `:hover:not(.disabled)` |
-| `state: Focus` | _(no prop)_ | — | — | CSS `:focus-within:not(.disabled)` on wrapper |
-| `state: Active` | _(no prop)_ | — | — | Represented by having a value; no React prop |
-| `validationState: Negative` | `aria-invalid="true"` | `React.AriaAttributes['aria-invalid']` | — | Set on `InputRoot`; triggers `outlineColor.negative-bold` outline |
-| `validationState: Positive` | `isValid={true}` → `data-valid="true"` | `boolean \| undefined` | `undefined` | Set on `InputRoot`; triggers `outlineColor.positive-bold` outline |
-| `validationState: None` | _(default — neither attr set)_ | — | — | |
-| `isDisabled` | `disabled` | `boolean` | `false` | Native HTML attribute on `InputRoot` and `Input`; adds `.disabled` class |
-| `showLeadingTab` | `leadingTab` present | `ReactNode \| undefined` | `undefined` | Tab renders if prop is truthy; Separator auto-inserted |
-| `showTrailingTab` | `trailingTab` present | `ReactNode \| undefined` | `undefined` | Tab renders if prop is truthy; Separator auto-inserted |
-| `showLeadingIcon` | `leadingIcon` present | `ReactNode \| undefined` | `undefined` | Icon renders if prop is truthy |
-| `showLeading` | `leading` present | `string \| undefined` | `undefined` | Text renders if prop is truthy |
-| `showTrailing` | `trailing` present | `string \| undefined` | `undefined` | Text renders if prop is truthy |
-| `placeholder` | `placeholder` | `string` | — | Native HTML attribute on `<input>` |
-| `value` | `value` | `string` | — | Native HTML attribute on `<input>` |
+| Figma variant / prop | React prop | Component | Type | Default | Notes |
+|---|---|---|---|---|---|
+| `state: Placeholder` | _(no prop)_ | — | — | — | CSS `:placeholder-shown` / default; no React prop |
+| `state: Hover` | _(no prop)_ | — | — | — | CSS `:hover:not(.disabled)` |
+| `state: Focus` | _(no prop)_ | — | — | — | CSS `:focus-within:not(.disabled)` on wrapper |
+| `state: Active` | _(no prop)_ | — | — | — | Represented by having a value; no React prop |
+| `validationState: Negative` | `aria-invalid="true"` | `InputRoot` | `React.AriaAttributes['aria-invalid']` | — | Triggers `outlineColor.negative-bold` outline |
+| `validationState: Positive` | `isValid={true}` → `data-valid="true"` | `InputRoot` | `boolean \| undefined` | `undefined` | Triggers `outlineColor.positive-bold` outline |
+| `validationState: None` | _(default — neither attr set)_ | — | — | — | |
+| `isDisabled` | `disabled` | `InputRoot` + `Input` | `boolean` | `false` | Pass on both; `InputRoot` adds `.disabled` class for cursor; `Input` disables the native `<input>` |
+| `showLeadingTab` | `leadingTab` present | **`Input`** ⚠️ | `ReactNode \| undefined` | `undefined` | Tab renders if prop is truthy; Separator auto-inserted after |
+| `showTrailingTab` | `trailingTab` present | **`Input`** ⚠️ | `ReactNode \| undefined` | `undefined` | Tab renders if prop is truthy; Separator auto-inserted before |
+| `showLeadingIcon` | `leadingIcon` present | **`Input`** ⚠️ | `ReactNode \| undefined` | `undefined` | Icon renders if prop is truthy |
+| `showLeading` | `leading` present | **`Input`** ⚠️ | `string \| undefined` | `undefined` | Text renders if prop is truthy |
+| `showTrailing` | `trailing` present | **`Input`** ⚠️ | `string \| undefined` | `undefined` | Text renders if prop is truthy |
+| `placeholder` | `placeholder` | `Input` | `string` | — | Native HTML attribute on `<input>` |
+| `value` | `value` | `Input` | `string` | — | Native HTML attribute on `<input>` |
 
 ---
 
@@ -270,7 +298,7 @@ This component does **not** use CVA. Classes are applied directly.
 
 **Visual spec mismatches:**
 
-- **Base container border color**: styles.js uses `theme('borderColor.default')` → zinc-200 (`#e4e4e7`). Figma consistently uses `color/border/bold` → `borderColor.bold` → zinc-300 (`#d4d4d8`) for both default and hover states. The border should be `theme('borderColor.bold')` to match Figma.
+- **Base container border color**: ~~styles.js uses `theme('borderColor.default')` → zinc-200 (`#e4e4e7`). Figma consistently uses `color/border/bold` → `borderColor.bold` → zinc-300 (`#d4d4d8`) for both default and hover states.~~ **Fixed** — styles.js now uses `theme('borderColor.bold')` (`#d4d4d8`) to match Figma.
 - **Validation state border vs outline**: Figma renders `validationState: Negative/Positive` as a 1px **border** on a wrapping `<div>`. React implements this as a 1px **outline** on `.input-container-wrapper`. CSS `outline` doesn't affect layout; `border` does. Visually similar but structurally different.
 - **Clear button missing**: Figma shows an "Icon / Clear" (✕, 16px) inside the input area in the `state: Focus` variant, positioned between the value text and trailing text. React does not implement this icon or its click-to-clear behavior.
 - **`borderColor.bold` not used in hover**: Figma shows the container border remaining `color/border/bold` on hover (background changes, border stays). React styles do not explicitly re-assert a border on hover, so the border stays at whatever the base `borderColor.default` is — still mismatched from Figma's `borderColor.bold`.
