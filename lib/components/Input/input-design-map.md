@@ -151,13 +151,13 @@
 | Label | `label` (FormGroupLabel) | — (consumer-rendered) | Label text string | `content/caption-strong` (xs, medium, leading-2); color: `textColor.subtle` |
 | Mandatory marker | `variant: Mandatory` (FormGroupLabel) | — (consumer-rendered) | "(mandatory)" text + asterisk | asterisk color: `textColor.negative` |
 | Tooltip | `showTooltip` (FormGroupLabel) | — (consumer-rendered) | Info icon | 12px icon |
-| Leading tab | `showLeadingTab` | `leadingTab: ReactNode` | Dropdown trigger (e.g., country selector) | Generic slot; separator auto-inserted after if present |
+| Leading tab | `showLeadingTab` | `leadingTab: ReactNode` | Dropdown trigger (e.g., country selector) | Generic slot; separator auto-inserted after if present. **⚠️ Does NOT inherit `font/family/body` — consumer must add `font-body` to tab content. See Gaps.** |
 | Leading icon | `showLeadingIcon`, `leadingIcon` | `leadingIcon: ReactNode` | 16px icon | Forced to 1rem via `.input-leading-icon`; color: `colors.icon.subtle` (default), `colors.icon.disabled` (disabled) |
-| Leading text | `showLeading`, `leading` | `leading: string` | Prefix string (e.g., "+1") | Inherits container color; `textContentStyles` applied |
+| Leading text | `showLeading`, `leading` | `leading: string` | Prefix string (e.g., "+1") | Inherits container color; `textContentStyles` applied (Inter, 14px, medium) |
 | Input value | `value`, `placeholder` | native `value` / `placeholder` | Text input | Full-width (`flex: 1`); value: `textColor.subtle`; placeholder: `textColor.subtler` |
 | Clear button | _(Focus state only)_ | — (not implemented) | Icon / Clear (✕, 16px) | Figma-only; appears in Focus state; no React equivalent — see Gaps |
-| Trailing text | `showTrailing`, `trailing` | `trailing: string` | Suffix string (e.g., "USD") | `margin-left: auto`; inherits container color |
-| Trailing tab | `showTrailingTab` | `trailingTab: ReactNode` | Dropdown trigger (e.g., currency selector) | Generic slot; separator auto-inserted before if present |
+| Trailing text | `showTrailing`, `trailing` | `trailing: string` | Suffix string (e.g., "USD") | `margin-left: auto`; inherits container color; `textContentStyles` applied (Inter, 14px, medium) |
+| Trailing tab | `showTrailingTab` | `trailingTab: ReactNode` | Dropdown trigger (e.g., currency selector) | Generic slot; separator auto-inserted before if present. **⚠️ Does NOT inherit `font/family/body` — consumer must add `font-body` to tab content. See Gaps.** |
 | Helper text | `showHelperText`, `helperText` | — (consumer-rendered) | Hint / error / success message | `content/caption` (xs, normal, leading-2); color varies by validation state |
 
 ---
@@ -300,6 +300,19 @@ This component does **not** use CVA. Classes are applied directly.
 - `outlineColor.negative-bold` — token-map.md confirms no Figma foundation token. Nearest Figma concept is `color/border/negative-bold` (rendered as a border, not outline). Resolved value is identical (`#dc2626`).
 - `outlineColor.positive-bold` — same as above. Nearest Figma concept is `color/border/positive-bold`. Resolved value: `#16a34a`.
 - `fontSize.base` — used in `.input-leading-icon` to size SVG / MUI icons (16px = 1rem). No Figma variable; code-only.
+
+**Font inheritance for tab slots:**
+
+- **`leadingTab` / `trailingTab` font family** — Figma sets `font/family/body` (`'Inter:Medium'`) explicitly on all text inside the leading and trailing Popover triggers. In React, `leadingTab` and `trailingTab` are raw `ReactNode` slots rendered directly inside `.input-container` — outside `.input-wrapper`. The component does not apply `textContentStyles` (or any `fontFamily`) to the `.input-container` root, so tab content inherits Tailwind's preflight system font (`ui-sans-serif, system-ui`) rather than `fontFamily.body` (Inter). **Fix:** add `font-body` class to text elements inside any `leadingTab` / `trailingTab` content you pass.
+
+  ```tsx
+  leadingTab={
+    <div className="flex items-center gap-1 px-3 py-2">
+      <span className="font-body text-sm font-medium text-subtler">US</span>
+      {/* ... */}
+    </div>
+  }
+  ```
 
 **Visual spec mismatches:**
 

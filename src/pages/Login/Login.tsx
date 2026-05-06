@@ -40,7 +40,7 @@ export function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   leadingTab={
                     <div className="flex items-center gap-1 px-3 py-2">
-                      <span className="text-sm font-medium text-subtler">
+                      <span className="font-body text-sm font-medium text-subtler">
                         US
                       </span>
                       <span className="mui-icon material-symbols-rounded text-base text-subtler">
@@ -71,7 +71,7 @@ export function LoginPage() {
                   trailing="test"
                   trailingTab={
                     <div className="flex items-center gap-1 px-3 py-2">
-                      <span className="text-sm font-medium text-subtler">
+                      <span className="font-body text-sm font-medium text-subtler">
                         USD
                       </span>
                       <span className="mui-icon material-symbols-rounded text-base text-subtler">
