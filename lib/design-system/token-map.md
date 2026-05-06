@@ -422,6 +422,25 @@
 
 ---
 
+## 15. Text Styles (Composite Typography)
+
+> Figma named text styles that combine multiple tokens into a single preset. Use these as the source of truth when applying typography to text nodes. "Body font" = Inter (`font-body` / no class needed as default); "Heading font" = Favorit (`font-heading`).
+
+| Figma text style | Font family | Size | Weight | Line height | Letter spacing | Tailwind classes |
+|---|---|---|---|---|---|---|
+| `heading/h1` | Favorit | `text-xl` (20px) | `font-medium` (500) | `leading-5` (24px) | `tracking-denser` (-0.4px) | `font-heading font-medium text-xl leading-5 tracking-denser` |
+| `heading/h2` | Favorit | `text-lg` (18px) | `font-medium` (500) | `leading-5` (24px) | `tracking-denser` (-0.4px) | `font-heading font-medium text-lg leading-5 tracking-denser` |
+| `heading/h3` | Favorit | `text-base` (16px) | `font-medium` (500) | `leading-4` (20px) | `tracking-dense` (-0.3px) | `font-heading font-medium text-base leading-4 tracking-dense` |
+| `heading/h4` | Favorit | `text-sm` (14px) | `font-medium` (500) | `leading-4` (20px) | — | `font-heading font-medium text-sm leading-4` |
+| `content/text` | Inter | `text-sm` (14px) | `font-medium` (500) | `leading-4` (20px) | — | `font-medium text-sm leading-4` |
+| `content/text-light` | Inter | `text-sm` (14px) | `font-normal` (400) | `leading-4` (20px) | — | `font-normal text-sm leading-4` |
+| `content/caption-strong` | Inter | `text-xs` (12px) | `font-medium` (500) | `leading-2` (16px) | — | `font-medium text-xs leading-2` |
+| `content/caption` | Inter | `text-xs` (12px) | `font-normal` (400) | `leading-2` (16px) | — | `font-normal text-xs leading-2` |
+
+> **Key rule:** `heading/*` styles always use `font-heading` (Favorit). `content/*` styles always use Inter (default body font — no class needed). Labels, helper text, and captions use `content/caption-strong` or `content/caption` → `leading-2` not `leading-4`.
+
+---
+
 ## ⚠️ Figma tokens with no matching Tailwind path
 
 These Foundation tokens exist in Figma but have no semantic path in `tailwind.theme.ts`.
@@ -514,3 +533,4 @@ All 8 shadow tokens (`soft-xs`, `soft-sm`, `soft-md`, `soft-lg`, `soft-xl`, `har
 | Border Width | 5 | 5 | 0 | 0 |
 | Blur | 8 | 8 | 0 | 0 |
 | Breakpoints | 5 | 5 | 0 | 0 |
+| Text Styles | 8 | 8 | 0 | 0 |

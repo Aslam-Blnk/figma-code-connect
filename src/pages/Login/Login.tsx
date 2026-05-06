@@ -10,17 +10,17 @@ export function LoginPage() {
 
   return (
     /* Page */
-    <div className="flex min-h-screen items-center justify-center bg-[#f6f6f8]">
+    <div className="flex min-h-screen items-center justify-center bg-brand">
       {/* Card */}
       <Card variant="default" elevation="flat" className="w-96 p-10">
         {/* Content */}
         <div className="flex w-full flex-col gap-6">
           {/* Header */}
           <div className="flex flex-col items-center gap-2 text-center">
-            <h2 className="leading-8 text-2xl font-semibold text-default">
+            <h2 className="font-heading text-xl font-medium leading-5 tracking-denser text-default">
               Welcome back
             </h2>
-            <p className="text-sm text-subtler">
+            <p className="text-sm font-normal leading-4 text-subtler">
               Enter your credentials to access your account
             </p>
           </div>
@@ -29,7 +29,7 @@ export function LoginPage() {
           <div className="flex w-full flex-col gap-4">
             {/* Email */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium leading-4 text-subtle">
+              <label className="text-xs font-medium leading-2 text-subtle">
                 Email
               </label>
               <InputRoot>
@@ -59,7 +59,7 @@ export function LoginPage() {
 
             {/* Password */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium leading-4 text-subtle">
+              <label className="text-xs font-medium leading-2 text-subtle">
                 Password
               </label>
               <InputRoot>
@@ -87,7 +87,7 @@ export function LoginPage() {
                     info
                   </span>
                 </div>
-                <p className="flex-1 text-xs font-normal leading-4 text-subtle">
+                <p className="flex-1 text-xs font-normal leading-2 text-subtle">
                   this is the helper text
                 </p>
               </div>
@@ -113,7 +113,7 @@ export function LoginPage() {
             <span className="font-normal text-subtler">
               Don&apos;t have an account?
             </span>
-            <span className="font-medium text-brand">Sign up</span>
+            <span className="font-heading font-medium text-brand">Sign up</span>
           </div>
         </div>
       </Card>
