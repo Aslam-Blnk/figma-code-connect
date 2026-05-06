@@ -59,6 +59,11 @@
 | `font/lineHeight/leading-4` | `lineHeight.4` | Input value, leading, trailing (20px) |
 | `font/lineHeight/leading-2` | `lineHeight.2` | Label text, helper text (16px) |
 
+> **Typography utility classes** — instead of writing individual atomic classes, use these composites (defined in `lib/styles.js`, documented in `token-map.md` Section 15):
+> - Label above input (`content/caption-strong`) → `text-content-caption-strong`
+> - Helper text (`content/caption`) → `text-content-caption`
+> - Input value / leading / trailing (`content/text`) → applied internally via `textContentStyles(theme)` = equivalent of `text-content`
+
 > ⚠️ `color/border/negative-bold` and `color/border/positive-bold` have no matching Figma foundation token. They resolve to the same values as `outlineColor.negative-bold` and `outlineColor.positive-bold` in the Tailwind config, but are different CSS properties (border vs outline). See Gaps.
 
 ---
@@ -83,14 +88,14 @@
 
 | State | Background | Border | Text color | Outline on wrapper |
 |---|---|---|---|---|
-| Default (Placeholder) | `backgroundColor.default` | `borderColor.default` ⚠️ | `textColor.subtler` (inherited) | none |
+| Default (Placeholder) | `backgroundColor.default` | `borderColor.bold` ✅ | `textColor.subtler` (inherited) | none |
 | Hover | `backgroundColor.interactive.hover` | unchanged | `.input` → `textColor.subtle` | none |
 | Focus-within | `backgroundColor.default` | unchanged | `textColor.subtle` (inherited) | 2px solid `outlineColor.focus-ring` |
 | Disabled | `backgroundColor.default` | `borderColor.interactive.disabled` | `textColor.interactive.disabled` | none |
 | `aria-invalid` + not focus | unchanged | unchanged | unchanged | 1px solid `outlineColor.negative-bold` |
 | `data-valid` + not focus | unchanged | unchanged | unchanged | 1px solid `outlineColor.positive-bold` |
 
-> ⚠️ styles.js uses `borderColor.default` (zinc-200, `#e4e4e7`) for the base container border. Figma specifies `color/border/bold` (zinc-300, `#d4d4d8`) — one tone darker. See Gaps.
+> ✅ styles.js uses `borderColor.bold` (zinc-300, `#d4d4d8`) — matches Figma's `color/border/bold`. Fixed in this session.
 
 **Leading tab / trailing tab (Popover sub-component in Figma):**
 
@@ -108,7 +113,7 @@
 
 | State | What changes | theme() paths |
 |---|---|---|
-| Default | Baseline: white bg, 1px border, subtler text/placeholder | `backgroundColor.default`, `borderColor.default` ⚠️, `textColor.subtler` |
+| Default | Baseline: white bg, 1px border, subtler text/placeholder | `backgroundColor.default`, `borderColor.bold` ✅, `textColor.subtler` |
 | Hover | bg → interactive.hover; `.input` color → subtle | `backgroundColor.interactive.hover`, `textColor.subtle` |
 | Focus-within | Outline 2px focus-ring on wrapper; bg stays default; inherited color → subtle; leading/trailing → subtle | `outlineColor.focus-ring`, `backgroundColor.default`, `textColor.subtle` |
 | Disabled | cursor not-allowed; border → interactive.disabled; all text → interactive.disabled; icon → icon.disabled; separator → interactive.disabled color | `borderColor.interactive.disabled`, `textColor.interactive.disabled`, `colors.icon.disabled` |

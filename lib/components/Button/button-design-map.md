@@ -255,8 +255,10 @@ These are passed through `...props` to the native `<button>` element — no CVA 
 | Helper | Source | Used in |
 |---|---|---|
 | `transitionColorsStyles(theme)` | Tailwind plugin util | `.button-base` — smooth color transitions on bg, border, text, shadow |
-| `textContentStyles(theme)` | Tailwind plugin util | `.button-base` — sets body font, `font-size: sm`, `font-weight: medium` |
+| `textContentStyles(theme)` | Tailwind plugin util | `.button-base` — sets body font, `font-size: sm`, `font-weight: medium` (equivalent of `text-content` utility class) |
 | `transitionAllStyles(theme)` | Tailwind plugin util | `circularBlur` helper — all-property transition on the `::before` glow element |
+
+> **Typography utility class** — button labels are styled internally via `textContentStyles`, which is identical to the `text-content` utility class (`font-body font-medium text-sm leading-4`). When overriding button label styles from outside, use `text-content` as the reference. See `token-map.md` Section 15.
 
 ---
 
