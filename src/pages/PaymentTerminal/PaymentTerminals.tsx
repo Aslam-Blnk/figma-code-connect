@@ -108,7 +108,11 @@ const statusConfig: Record<
     icon: string
   }
 > = {
-  operative: { label: 'Operative', badgeColor: 'positive', icon: 'check_circle' },
+  operative: {
+    label: 'Operative',
+    badgeColor: 'positive',
+    icon: 'check_circle',
+  },
   disconnected: { label: 'Offline', badgeColor: 'neutral', icon: 'circle' },
   inoperative: { label: 'Inoperative', badgeColor: 'notice', icon: 'cancel' },
   faulted: { label: 'Operative', badgeColor: 'negative', icon: 'error' },
@@ -126,7 +130,7 @@ const columns: ColumnDef<PaymentTerminal>[] = [
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
         Terminal ID
-        <span className="mui-icon material-symbols-rounded !size-4 !text-base text-icon-subtler">
+        <span className="text-icon-subtler mui-icon material-symbols-rounded !size-4 !text-base">
           {column.getIsSorted() === 'desc' ? 'arrow_downward' : 'arrow_upward'}
         </span>
       </button>
@@ -135,14 +139,12 @@ const columns: ColumnDef<PaymentTerminal>[] = [
       <div className="flex flex-col gap-1">
         <p className="text-subtle text-content">{row.original.id}</p>
         <div className="flex items-center gap-1.5">
-          <div className="flex items-center justify-center rounded bg-brand-muted p-0.5">
+          <div className="bg-brand-muted flex items-center justify-center rounded p-0.5">
             <span className="mui-icon material-symbols-rounded !size-3.5 !text-sm text-icon-brand">
               receipt_long
             </span>
           </div>
-          <LinkButton variant="brand">
-            {row.original.serialNumber}
-          </LinkButton>
+          <LinkButton variant="brand">{row.original.serialNumber}</LinkButton>
         </div>
       </div>
     ),
@@ -153,19 +155,21 @@ const columns: ColumnDef<PaymentTerminal>[] = [
     header: () => (
       <div className="flex items-center gap-1.5">
         Network Boundary
-        <span className="mui-icon material-symbols-rounded !size-4 !text-base text-icon-subtler">
+        <span className="text-icon-subtler mui-icon material-symbols-rounded !size-4 !text-base">
           filter_list
         </span>
       </div>
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        <div className="flex items-center justify-center rounded bg-brand-muted p-0.5">
+        <div className="bg-brand-muted flex items-center justify-center rounded p-0.5">
           <span className="mui-icon material-symbols-rounded filled !size-4 !text-base text-icon-brand">
             point_of_sale
           </span>
         </div>
-        <p className="text-subtle text-content">{row.original.networkBoundary}</p>
+        <p className="text-subtle text-content">
+          {row.original.networkBoundary}
+        </p>
       </div>
     ),
     meta: { headerProps: { className: 'text-left' } },
@@ -178,7 +182,7 @@ const columns: ColumnDef<PaymentTerminal>[] = [
           language
         </span>
         Site
-        <span className="mui-icon material-symbols-rounded !size-4 !text-base text-icon-subtler">
+        <span className="text-icon-subtler mui-icon material-symbols-rounded !size-4 !text-base">
           filter_list
         </span>
       </div>
@@ -243,7 +247,7 @@ function AppSidebar() {
             <span className="min-w-0 flex-1 truncate text-subtle text-content">
               Acme Corporation Ltd
             </span>
-            <span className="mui-icon material-symbols-rounded shrink-0 !size-5 !text-xl text-icon-subtle">
+            <span className="mui-icon material-symbols-rounded !size-5 shrink-0 !text-xl text-icon-subtle">
               keyboard_arrow_down
             </span>
           </div>
@@ -270,7 +274,9 @@ function AppSidebar() {
                   <span className="mui-icon material-symbols-rounded !size-4 !text-base text-icon-subtle">
                     nearby_error
                   </span>
-                  <span className="text-subtle text-content">Charger faults</span>
+                  <span className="text-subtle text-content">
+                    Charger faults
+                  </span>
                 </div>
                 <Badge variant="flat" badgeColor="neutral" isCount>
                   99+
@@ -345,7 +351,9 @@ function AppSidebar() {
                       request_quote
                     </span>
                   </div>
-                  <span className="text-subtle text-content">Pricing models</span>
+                  <span className="text-subtle text-content">
+                    Pricing models
+                  </span>
                 </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -355,7 +363,9 @@ function AppSidebar() {
                   <span className="mui-icon material-symbols-rounded !size-4 !text-base text-icon-subtle">
                     terminal
                   </span>
-                  <span className="text-subtle text-content">Command queue</span>
+                  <span className="text-subtle text-content">
+                    Command queue
+                  </span>
                 </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -381,7 +391,9 @@ function AppSidebar() {
                   <span className="mui-icon material-symbols-rounded !size-4 !text-base text-icon-subtle">
                     groups
                   </span>
-                  <span className="text-subtle text-content">Driver groups</span>
+                  <span className="text-subtle text-content">
+                    Driver groups
+                  </span>
                 </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -426,7 +438,9 @@ function AppSidebar() {
         </SidebarGroup>
         <Separator orientation="horizontal" className="w-full" />
         <div className="flex w-full items-center justify-between p-4">
-          <p className="text-subtler text-content-caption-strong">Chargeconnect</p>
+          <p className="text-subtler text-content-caption-strong">
+            Chargeconnect
+          </p>
           <p className="text-subtler text-content-caption-strong">v3.0</p>
         </div>
       </SidebarFooter>
@@ -469,7 +483,10 @@ function PaymentTerminalsTable() {
                 >
                   {header.isPlaceholder
                     ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                 </TableHead>
               ))}
             </TableRow>
@@ -491,7 +508,8 @@ function PaymentTerminalsTable() {
       <div className="mt-auto flex w-full flex-col items-center justify-between gap-4 border-t border-default p-4 sm:flex-row sm:gap-0 sm:px-5">
         <p className="text-nowrap text-subtler text-content-light">
           {start}–{end} of{' '}
-          <span className="text-subtle text-number-sm">{totalRows}</span> records
+          <span className="text-subtle text-number-sm">{totalRows}</span>{' '}
+          records
         </p>
         <div className="flex items-center gap-2">
           <Button
@@ -500,7 +518,9 @@ function PaymentTerminalsTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <span className="mui-icon material-symbols-rounded">keyboard_arrow_left</span>
+            <span className="mui-icon material-symbols-rounded">
+              keyboard_arrow_left
+            </span>
           </Button>
           <p className="text-subtle text-content">
             {pageIndex + 1} / {table.getPageCount()}
@@ -511,7 +531,9 @@ function PaymentTerminalsTable() {
             disabled={!table.getCanNextPage()}
             onClick={() => table.nextPage()}
           >
-            <span className="mui-icon material-symbols-rounded">chevron_right</span>
+            <span className="mui-icon material-symbols-rounded">
+              chevron_right
+            </span>
           </Button>
         </div>
       </div>
@@ -539,7 +561,11 @@ export default function PaymentTerminals() {
   function toggleFilter(filter: string) {
     setActiveFilters((prev) => {
       const next = new Set(prev)
-      next.has(filter) ? next.delete(filter) : next.add(filter)
+      if (next.has(filter)) {
+        next.delete(filter)
+      } else {
+        next.add(filter)
+      }
       return next
     })
   }
@@ -563,7 +589,9 @@ export default function PaymentTerminals() {
               <Separator orientation="vertical" className="h-5" />
               <div className="flex items-center gap-1.5">
                 <Button variant="ghost" iconOnly>
-                  <span className="mui-icon material-symbols-rounded">refresh</span>
+                  <span className="mui-icon material-symbols-rounded">
+                    refresh
+                  </span>
                 </Button>
                 <p className="w-20 text-subtler text-content-caption-strong">
                   14 mins ago
@@ -582,7 +610,9 @@ export default function PaymentTerminals() {
               Add Terminal
             </Button>
             <Button variant="neutral">
-              <span className="mui-icon material-symbols-rounded">text_snippet</span>
+              <span className="mui-icon material-symbols-rounded">
+                text_snippet
+              </span>
               Export
             </Button>
           </div>
@@ -615,10 +645,7 @@ export default function PaymentTerminals() {
               All filters
             </FilterRoot>
           </div>
-          <InputSearch
-            placeholder="Search by charger name"
-            className="w-80"
-          />
+          <InputSearch placeholder="Search by charger name" className="w-80" />
         </div>
 
         {/* Table */}
