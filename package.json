@@ -43,7 +43,8 @@
     "format": "prettier --write .",
     "prepublishOnly": "pnpm run build",
     "chromatic": "npx chromatic",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "generate:components-md": "node scripts/generate-components-md.mjs"
   },
   "peerDependencies": {
     "@hookform/resolvers": "^5.2.2",
