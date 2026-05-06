@@ -20,7 +20,7 @@ export function LoginPage() {
             <h2 className="font-heading text-xl font-medium leading-5 tracking-denser text-default">
               Welcome back
             </h2>
-            <p className="text-sm font-normal leading-4 text-subtler">
+            <p className="text-subtler text-content-light">
               Enter your credentials to access your account
             </p>
           </div>
@@ -29,7 +29,7 @@ export function LoginPage() {
           <div className="flex w-full flex-col gap-4">
             {/* Email */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium leading-2 text-subtle">
+              <label className="text-subtle text-content-caption-strong">
                 Email
               </label>
               <InputRoot>
@@ -59,7 +59,7 @@ export function LoginPage() {
 
             {/* Password */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium leading-2 text-subtle">
+              <label className="text-subtle text-content-caption-strong">
                 Password
               </label>
               <InputRoot>
@@ -87,7 +87,7 @@ export function LoginPage() {
                     info
                   </span>
                 </div>
-                <p className="flex-1 text-xs font-normal leading-2 text-subtle">
+                <p className="flex-1 text-subtle text-content-caption">
                   this is the helper text
                 </p>
               </div>
@@ -110,7 +110,7 @@ export function LoginPage() {
 
           {/* Footer */}
           <div className="flex items-center justify-center gap-1 text-sm">
-            <span className="font-normal text-subtler">
+            <span className="text-subtler text-content-light">
               Don&apos;t have an account?
             </span>
             <span className="font-heading font-medium text-brand">Sign up</span>

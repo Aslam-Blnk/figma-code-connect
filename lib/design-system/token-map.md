@@ -424,20 +424,56 @@
 
 ## 15. Text Styles (Composite Typography)
 
-> Figma named text styles that combine multiple tokens into a single preset. Use these as the source of truth when applying typography to text nodes. "Body font" = Inter (`font-body` / no class needed as default); "Heading font" = Favorit (`font-heading`).
+> Figma named text styles that combine multiple tokens into a single preset. In code these are exposed as **single-class utilities** — always prefer a utility class over writing the individual atomic classes manually.
 
-| Figma text style | Font family | Size | Weight | Line height | Letter spacing | Tailwind classes |
+### Heading element styles (`h1`–`h4`)
+
+Applied globally via `addBase` in `lib/styles.js`. Use semantic HTML elements — no extra class needed.
+
+| Element | Figma style | Font | Size | Weight | Line height | Letter spacing |
 |---|---|---|---|---|---|---|
-| `heading/h1` | Favorit | `text-xl` (20px) | `font-medium` (500) | `leading-5` (24px) | `tracking-denser` (-0.4px) | `font-heading font-medium text-xl leading-5 tracking-denser` |
-| `heading/h2` | Favorit | `text-lg` (18px) | `font-medium` (500) | `leading-5` (24px) | `tracking-denser` (-0.4px) | `font-heading font-medium text-lg leading-5 tracking-denser` |
-| `heading/h3` | Favorit | `text-base` (16px) | `font-medium` (500) | `leading-4` (20px) | `tracking-dense` (-0.3px) | `font-heading font-medium text-base leading-4 tracking-dense` |
-| `heading/h4` | Favorit | `text-sm` (14px) | `font-medium` (500) | `leading-4` (20px) | — | `font-heading font-medium text-sm leading-4` |
-| `content/text` | Inter | `text-sm` (14px) | `font-medium` (500) | `leading-4` (20px) | — | `font-medium text-sm leading-4` |
-| `content/text-light` | Inter | `text-sm` (14px) | `font-normal` (400) | `leading-4` (20px) | — | `font-normal text-sm leading-4` |
-| `content/caption-strong` | Inter | `text-xs` (12px) | `font-medium` (500) | `leading-2` (16px) | — | `font-medium text-xs leading-2` |
-| `content/caption` | Inter | `text-xs` (12px) | `font-normal` (400) | `leading-2` (16px) | — | `font-normal text-xs leading-2` |
+| `<h1>` | `heading/h1` | Favorit | `text-xl` (20px) | `font-medium` | `leading-5` (24px) | `tracking-denser` (-0.4px) |
+| `<h2>` | `heading/h2` | Favorit | `text-lg` (18px) | `font-medium` | `leading-5` (24px) | `tracking-dense` (-0.3px) |
+| `<h3>` | `heading/h3` | Favorit | `text-base` (16px) | `font-medium` | `leading-4` (20px) | — |
+| `<h4>` | `heading/h4` | Favorit | `text-sm` (14px) | `font-medium` | `leading-4` (20px) | — |
 
-> **Key rule:** `heading/*` styles always use `font-heading` (Favorit). `content/*` styles always use Inter (default body font — no class needed). Labels, helper text, and captions use `content/caption-strong` or `content/caption` → `leading-2` not `leading-4`.
+> All heading elements also apply Favorit OpenType features: `lining-nums`, `proportional-nums`, `slashed-zero`, `ss02`–`ss05`, `liga off`.
+
+### Content utility classes
+
+Registered as Tailwind utilities in `lib/styles.js`. Apply a single class to any text element.
+
+| Utility class | Figma style | Font | Size | Weight | Line height | Letter spacing |
+|---|---|---|---|---|---|---|
+| `text-content` | `content/text` | Inter | `text-sm` (14px) | `font-medium` (500) | `leading-4` (20px) | — |
+| `text-content-light` | `content/text-light` | Inter | `text-sm` (14px) | `font-normal` (400) | `leading-4` (20px) | — |
+| `text-content-paragraph` | `content/text-paragraph` | Inter | `text-sm` (14px) | `font-normal` (400) | `leading-4` (20px) | — |
+| `text-content-caption-strong` | `content/caption-strong` | Inter | `text-xs` (12px) | `font-medium` (500) | `leading-2` (16px) | — |
+| `text-content-caption` | `content/caption` | Inter | `text-xs` (12px) | `font-normal` (400) | `leading-2` (16px) | — |
+| `text-content-label` | `content/label` | Inter | `text-xs` (12px) | `font-semibold` (600) | `leading-2` (16px) | `tracking-sparse` (+0.6px) |
+| `text-content-label-light` | `content/label-light` | Inter | `text-xs` (12px) | `font-normal` (400) | `leading-2` (16px) | `tracking-sparse` (+0.6px) |
+
+### Number utility classes
+
+| Utility class | Font | Size | Weight | Line height |
+|---|---|---|---|---|
+| `text-number-xs` | JetBrains Mono | `text-xs` (12px) | `font-medium` | `leading-2` (16px) |
+| `text-number-sm` | JetBrains Mono | `text-sm` (14px) | `font-medium` | `leading-4` (20px) |
+| `text-number-xl` | JetBrains Mono | `text-xl` (20px) | `font-medium` | `leading-5` (24px) |
+| `text-number-3xl` | JetBrains Mono | `text-3xl` (30px) | `font-medium` | `leading-9` (36px) |
+
+### Quick-pick guide
+
+| What you're styling | Use |
+|---|---|
+| Page / section heading | `<h1>` – `<h4>` (semantic element, no extra class) |
+| Body text, labels inside components | `text-content` |
+| Secondary / lighter body text | `text-content-light` |
+| Long-form paragraph copy | `text-content-paragraph` |
+| Small label above a field | `text-content-caption-strong` |
+| Helper text, hints, timestamps | `text-content-caption` |
+| Uppercase / spaced label (badge-style) | `text-content-label` |
+| Numeric data / stats | `text-number-xs` – `text-number-3xl` |
 
 ---
 
