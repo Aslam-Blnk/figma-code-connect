@@ -1,164 +1,236 @@
-# input — Design Map
-
-> Last synced: 2026-05-05
-> Figma node: https://www.figma.com/design/eKAqJtRHEFoa6FOPw3xzCw/Components?node-id=703-11630
-
----
+# Input Design Map
 
 ## figma-design-context
 
 ### Component info
 
-- **Name:** Input Text
-- **Figma node:** https://www.figma.com/design/eKAqJtRHEFoa6FOPw3xzCw/Components?node-id=703-11630
-- **Date scanned:** 2026-05-05
+| | |
+|---|---|
+| **Name** | Input Text |
+| **Figma node URL** | https://www.figma.com/design/eKAqJtRHEFoa6FOPw3xzCw/Components?node-id=703-11630 |
+| **Last scanned** | 2026-05-12 |
+| **Category** | Form controls (single-line text field with slots) |
+
+> Per the Figma description: "The Input Text component is the standard single-line text input for forms. It supports label, placeholder, helper text, error state, disabled state, and optional leading/trailing elements. Use for any free-text form field."
+>
+> **Three React exports from one Figma:** `InputRoot` (validation outline wrapper), `Input` (the field + leading/trailing slots), and `InputSearch` (composes Input + a search LinkButton). Figma documents the field; React splits responsibility across three components — see Gap #2.
 
 ---
 
 ### Variants
+
+Sourced from the `InputTextProps` type signature in the `get_design_context` response (Figma codegen). Code Connect was unavailable (see Gap #1).
 
 | Property | Values | Default |
 |---|---|---|
 | `state` | `Placeholder` \| `Active` \| `Hover` \| `Focus` | `Placeholder` |
 | `validationState` | `None` \| `Positive` \| `Negative` | `None` |
 | `isDisabled` | `true` \| `false` | `false` |
-| `showLeadingTab` | `true` \| `false` | `true` |
-| `showTrailingTab` | `true` \| `false` | `true` |
-| `showLeadingIcon` | `true` \| `false` | `true` |
-| `showLeading` | `true` \| `false` | `true` |
-| `showTrailing` | `true` \| `false` | `true` |
-| `showHelperText` | `true` \| `false` | `true` |
+| `showLeadingTab` | `true` \| `false` _(slot toggle)_ | `true` |
+| `showTrailingTab` | `true` \| `false` _(slot toggle)_ | `true` |
+| `showLeading` | `true` \| `false` _(slot toggle)_ | `true` |
+| `showTrailing` | `true` \| `false` _(slot toggle)_ | `true` |
+| `showLeadingIcon` | `true` \| `false` _(slot toggle)_ | `true` |
+| `showHelperText` | `true` \| `false` _(slot toggle)_ | `true` |
+| `leadingIcon` | `React.ReactNode \| null` _(slot)_ | `null` |
+| `leading` / `trailing` | `string` _(slot)_ | `"{leading}"` / `"{trailing}"` |
+| `placeholder` / `value` / `helperText` | `string` _(slot)_ | `"{placeholder}"` / `"{value}"` / `"{helper text}"` |
 
-> `state` is a Figma-only presentation property. React handles these via CSS pseudo-classes (`:hover`, `:focus-within`) and the native `disabled` attribute. `validationState` maps to HTML attributes on `InputRoot`, not a React prop. See [Gaps](#gaps).
+#### Symbol-level completeness in Figma _(observed from conditional render paths)_
+
+- `Placeholder + None + !disabled` ✓
+- `Hover + None + !disabled` ✓
+- `Active + None + !disabled` ✓
+- `Active + None + disabled` ✓
+- `Active + Positive + !disabled` ✓
+- `Active + Negative + !disabled` ✓
+- `Focus + None + !disabled` ✓
+- Combinations involving `Hover + (Positive/Negative)` or `Focus + (Positive/Negative)` are not enumerated — implied to fall back to validationState's outline color via CSS
 
 ---
 
 ### Design tokens used
 
-| Figma token | theme() path | Used in |
+Sourced from `lib/design-system/token-map.md`. Cross-referenced with `get_variable_defs` for this node.
+
+#### Container (`.input-container`)
+
+| Figma token | Tailwind path | Used for |
 |---|---|---|
-| `color/bg/default` | `backgroundColor.default` | `.input-container` background (default + focus-within) |
-| `color/interactive/bg-hover` | `backgroundColor.interactive.hover` | `.input-container:hover` background |
-| `color/border/bold` | `borderColor.bold` | `.input-container` border — default and hover states (Figma) ⚠️ see Gaps |
-| `color/interactive/border-disabled` | `borderColor.interactive.disabled` | `.input-container.disabled` border; `.separator` in disabled state |
-| `color/text/subtle` | `textColor.subtle` | `.input` value text; `.input-container:focus-within` inherited color; active/focus leading + trailing (validation states) |
-| `color/text/subtler` | `textColor.subtler` | `.input-container` default color (leading/trailing inherit); `.input::placeholder`; leading + trailing in None state |
-| `color/interactive/text-disabled` | `textColor.interactive.disabled` | All text when disabled; `.input:disabled`, placeholder-disabled, `.disabled > *` |
-| `color/outline/focus-ring` | `outlineColor.focus-ring` | `.input-container-wrapper:focus-within` outline (2px) |
-| `color/border/negative-bold` ⚠️ | `outlineColor.negative-bold` | `.input-container-wrapper[aria-invalid]` outline (1px) — see Gaps |
-| `color/border/positive-bold` ⚠️ | `outlineColor.positive-bold` | `.input-container-wrapper[data-valid=true]` outline (1px) — see Gaps |
-| `icon/color/subtle` | `colors.icon.subtle` | `.input-leading-icon` default color |
-| `icon/color/disabled` | `colors.icon.disabled` | `.input-container.disabled .input-leading-icon` color |
-| `color/text/negative` | `textColor.negative` | Helper text color when `validationState = Negative` (Figma; consumer-rendered in React) |
-| `color/text/positive` | `textColor.positive` | Helper text color when `validationState = Positive` (Figma; consumer-rendered in React) |
-| `font/family/body` | `fontFamily.body` | All text elements via `textContentStyles` |
-| `font/weight/medium` | — (font-medium, 500) | Input value, leading, trailing via `textContentStyles`; label (`content/caption-strong`) |
-| `font/weight/normal` | — (font-normal, 400) | Helper text, "(mandatory)" label text (`content/caption`) |
-| `font/size/sm` | `fontSize.sm` | Input value, leading, trailing (14px) via `textContentStyles` |
-| `font/size/xs` | `fontSize.xs` | Label text, helper text (12px) |
-| `font/lineHeight/leading-4` | `lineHeight.4` | Input value, leading, trailing (20px) |
-| `font/lineHeight/leading-2` | `lineHeight.2` | Label text, helper text (16px) |
+| `color/bg/default` | `backgroundColor.default` (`#FFFFFF`) | Default background |
+| `color/interactive/bg-hover` | `backgroundColor.interactive.hover` (`#f4f4f5`) | `:hover` background |
+| `color/border/bold` | `borderColor.bold` (`#d4d4d8`) | `1px` border in default + hover |
+| `color/text/subtler` | `textColor.subtler` (`#71717a`) | Container text color (placeholder) |
+| `color/text/subtle` | `textColor.subtle` (`#3f3f46`) | `:focus-within` / hover text color |
+| `color/interactive/text-disabled` | `textColor.interactive.disabled` (`#d4d4d8`) | `.disabled` text + border |
+| `color/interactive/border-disabled` | `borderColor.interactive.disabled` (`#f4f4f5`) | `.disabled` border |
+| `border/1` | `1px` | Container border width |
 
-> **Typography utility classes** — instead of writing individual atomic classes, use these composites (defined in `lib/styles.js`, documented in `token-map.md` Section 15):
-> - Label above input (`content/caption-strong`) → `text-content-caption-strong`
-> - Helper text (`content/caption`) → `text-content-caption`
-> - Input value / leading / trailing (`content/text`) → applied internally via `textContentStyles(theme)` = equivalent of `text-content`
+#### Validation outline (`.input-container-wrapper`)
 
-> ⚠️ `color/border/negative-bold` and `color/border/positive-bold` have no matching Figma foundation token. They resolve to the same values as `outlineColor.negative-bold` and `outlineColor.positive-bold` in the Tailwind config, but are different CSS properties (border vs outline). See Gaps.
+| Figma token | Tailwind path | Used for |
+|---|---|---|
+| `color/outline/focus-ring` | `outlineColor.focus-ring` (`#60a5fa`) | `:focus-within:not(.disabled)` outline (`2px solid`) |
+| `color/border/negative-bold` _(via)_ | `outlineColor.negative-bold` _(no Figma token)_ | `[aria-invalid="true"]:not(:focus-within):not(.disabled)` outline (`1px solid`) — Tailwind-only path; see Gap #4 |
+| `color/border/positive-bold` _(via)_ | `outlineColor.positive-bold` _(no Figma token)_ | `[data-valid="true"]:not(:focus-within):not(.disabled)` outline (`1px solid`) — Tailwind-only path; see Gap #4 |
+| `border/2` | `2px` | Focus outline width |
+
+#### Slots & icons
+
+| Figma token | Tailwind path | Used for |
+|---|---|---|
+| `icon/color/subtle` | `colors.icon.subtle` (`#71717a`) | `.input-leading-icon` default color |
+| `icon/color/disabled` | `colors.icon.disabled` (`#d4d4d8`) | `.input-leading-icon` when `.disabled` |
+| `font/size/sm` | `1rem` (16px) icon size via `fontSize.base` | `& svg, & .mui-icon { height/width: 1rem }` |
+
+#### Composite typography + geometry
+
+| Figma token | Tailwind utility | Used for |
+|---|---|---|
+| `content/text` | utility `text-content` (via `textContentStyles(theme)`) | Field text + leading/trailing labels — Inter / 14px / 500 / 20px lh |
+| `content/caption` | utility `text-content-caption` | Helper text (Inter / 12px / 400 / 16px lh) — applied at slot level |
+| `content/caption-strong` | utility `text-content-caption-strong` | Form group label (Inter / 12px / 500 / 16px lh) — applied by `_Form Group Label` |
+| `spacing/3` | `0.75rem` (12px) | `.input-wrapper` horizontal padding |
+| `spacing/2` | `0.5rem` (8px) | `.input-wrapper` gap |
+| `spacing/1-5` | `0.375rem` (6px) | Gap between input wrapper and helper text |
+| `rounded/xl` | `0.75rem` (12px) | `.input-container` border-radius |
+
+#### Field-level fixed values
+
+| Value | Used for |
+|---|---|
+| `2.25rem` (36px) | `.input-wrapper` min-height |
+| `1rem` (16px) | Leading icon size |
 
 ---
 
 ### Visual specs
 
-**Base (all states):**
+#### `.input-container-wrapper` (outer — validation outline owner)
 
-| Property | Value | Notes |
-|---|---|---|
-| min-height | 36px (2.25rem) | On `.input-wrapper` |
-| border-radius | 12px (0.75rem) | On `.input-container` and `.input-container-wrapper` |
-| border | 1px solid | On `.input-container` |
-| padding | 0rem 0.75rem (horizontal) | On `.input-wrapper` |
-| gap | 0.5rem (8px) | On `.input-wrapper` between icon / leading / input / trailing |
-| icon size | 16px (1rem) | `.input-leading-icon svg`, `.mui-icon` — forced via `fontSize.base` |
-| outline (default) | 2px solid transparent | On `.input-container-wrapper`; real color applied on focus/validation |
-| outline-offset | 2px (default) → 0 (focus / validation) | |
-| typography | `textContentStyles(theme)` | Applies to `.input`, `.input-leading`, `.input-trailing` |
+| Property | Value |
+|---|---|
+| display | `flex` row |
+| width | `100%` |
+| border-radius | `0.75rem` (12px) |
+| outline (default) | `2px solid transparent`, offset `2px` |
+| transition | `transitionColorsStyles(theme)` |
+| outline (`:focus-within:not(.disabled)`) | `2px solid outlineColor.focus-ring`, offset `0` |
+| outline (`[aria-invalid="true"]:not(:focus-within):not(.disabled)`) | `1px solid outlineColor.negative-bold`, offset `0` |
+| outline (`[data-valid="true"]:not(:focus-within):not(.disabled)`) | `1px solid outlineColor.positive-bold`, offset `0` |
+| cursor (`.disabled`) | `not-allowed` |
 
-**Per state — `.input-container`:**
+#### `.input-container` (inner — visual frame)
 
-| State | Background | Border | Text color | Outline on wrapper |
-|---|---|---|---|---|
-| Default (Placeholder) | `backgroundColor.default` | `borderColor.bold` ✅ | `textColor.subtler` (inherited) | none |
-| Hover | `backgroundColor.interactive.hover` | unchanged | `.input` → `textColor.subtle` | none |
-| Focus-within | `backgroundColor.default` | unchanged | `textColor.subtle` (inherited) | 2px solid `outlineColor.focus-ring` |
-| Disabled | `backgroundColor.default` | `borderColor.interactive.disabled` | `textColor.interactive.disabled` | none |
-| `aria-invalid` + not focus | unchanged | unchanged | unchanged | 1px solid `outlineColor.negative-bold` |
-| `data-valid` + not focus | unchanged | unchanged | unchanged | 1px solid `outlineColor.positive-bold` |
+| Property | Value |
+|---|---|
+| position | `relative` |
+| display | `flex` row |
+| width | `100%` |
+| overflow | `hidden` |
+| border-radius | `0.75rem` |
+| border | `1px solid borderColor.bold` |
+| background | `backgroundColor.default` |
+| color | `textColor.subtler` |
+| transition | `transitionColorsStyles(theme)` |
 
-> ✅ styles.js uses `borderColor.bold` (zinc-300, `#d4d4d8`) — matches Figma's `color/border/bold`. Fixed in this session.
+Variants applied via state selectors:
+- `:hover:not(.disabled)` → bg → `interactive.hover`; `.input` color → `subtle`
+- `:focus-within` → bg → `default`; color → `subtle`
+- `.disabled` → cursor `not-allowed`; color + border → `interactive.disabled`; descendant `.separator` bg → `interactive.disabled`
+- `.disabled .input-leading-icon` → icon color → `disabled`
 
-**Leading tab / trailing tab (Popover sub-component in Figma):**
+#### `.input-wrapper` (field row)
 
-| State | Background | Text | Border |
-|---|---|---|---|
-| Default | `color/bg/transparent` | `color/text/subtler` | none |
-| Focus | `color/bg/transparent` | `color/text/subtler` | 2px solid `color/outline/focus-ring` |
-| Disabled | `color/bg/default` | `color/interactive/text-disabled` | none |
+| Property | Value |
+|---|---|
+| position | `relative` |
+| display | `flex` row, items center |
+| min-height | `2.25rem` (36px) |
+| width | `100%` |
+| flex | `1 1 0%` |
+| gap | `0.5rem` |
+| padding | `0 0.75rem` |
+| transition | `transitionColorsStyles(theme)` |
 
-> Tabs are generic ReactNode slots in React (`leadingTab`, `trailingTab`). Their visual styling is the responsibility of the composed component (e.g., a Popover trigger).
+#### `.input` (native `<input>`)
+
+| Property | Value |
+|---|---|
+| width | `100%` |
+| background | `transparent` |
+| color | `textColor.subtle` |
+| outline (default) | `2px solid transparent`, offset `2px` |
+| transition | `transitionColorsStyles(theme)` |
+| typography | `textContentStyles(theme)` |
+| `:disabled` | `cursor: not-allowed`, color → `interactive.disabled` |
+| `::placeholder` | color → `subtler`; `:disabled` → `interactive.disabled` |
+| `::-webkit-search-cancel-button` | Custom inline-SVG `x` icon, 16×16, no native styling |
+| `:autofill` (and `:-webkit-autofill` variants) | `background: transparent !important`, color → `subtle`, suppresses Chrome's autofill yellow via `-webkit-box-shadow: none !important` |
+
+#### `.input-leading-icon` / `.input-leading` / `.input-trailing`
+
+| Property | Value |
+|---|---|
+| `.input-leading-icon` | flex, full height, items center, justify center, color `colors.icon.subtle`, `16×16` icon |
+| `.input-leading` / `.input-trailing` | color `inherit`; typography `textContentStyles(theme)` |
+| `.input-trailing` | `marginLeft: auto` |
 
 ---
 
 ### Interaction states
 
-| State | What changes | theme() paths |
+| State | Visual changes | theme() path |
 |---|---|---|
-| Default | Baseline: white bg, 1px border, subtler text/placeholder | `backgroundColor.default`, `borderColor.bold` ✅, `textColor.subtler` |
-| Hover | bg → interactive.hover; `.input` color → subtle | `backgroundColor.interactive.hover`, `textColor.subtle` |
-| Focus-within | Outline 2px focus-ring on wrapper; bg stays default; inherited color → subtle; leading/trailing → subtle | `outlineColor.focus-ring`, `backgroundColor.default`, `textColor.subtle` |
-| Disabled | cursor not-allowed; border → interactive.disabled; all text → interactive.disabled; icon → icon.disabled; separator → interactive.disabled color | `borderColor.interactive.disabled`, `textColor.interactive.disabled`, `colors.icon.disabled` |
-| `aria-invalid="true"` (not focused) | Outline 1px negative-bold on wrapper | `outlineColor.negative-bold` |
-| `data-valid="true"` (not focused) | Outline 1px positive-bold on wrapper | `outlineColor.positive-bold` |
-| Focus-within takes priority | Focus outline overrides validation outline when focused | — |
+| Default (placeholder) | white bg, bold border, subtler text + subtle leading icon | — |
+| Hover (non-disabled) | bg → `bg-hover`; input color → `subtle` | `backgroundColor.interactive.hover` |
+| Focus-within (non-disabled) | bg → `default`; container text → `subtle`; outer wrapper outline → `2px solid focus-ring` | `outlineColor.focus-ring` |
+| Validation: invalid (non-focus, non-disabled) | outer wrapper outline → `1px solid negative-bold` | `outlineColor.negative-bold` _(Tailwind-only)_ |
+| Validation: valid (non-focus, non-disabled) | outer wrapper outline → `1px solid positive-bold` | `outlineColor.positive-bold` _(Tailwind-only)_ |
+| Disabled | cursor `not-allowed`; container text + border → `interactive.disabled`; descendants inherit; separator bg → `interactive.disabled` | `textColor.interactive.disabled`, `borderColor.interactive.disabled` |
 
-**Figma state–text color matrix (for slot content):**
+---
 
-| State | `validationState` | Placeholder | Value | Leading | Trailing |
-|---|---|---|---|---|---|
-| Placeholder | None | `textColor.subtler` | — | `textColor.subtler` | `textColor.subtler` |
-| Active | None | — | `textColor.subtle` | `textColor.subtler` | `textColor.subtler` |
-| Hover | None | — | `textColor.subtle` | `textColor.subtler` | `textColor.subtler` |
-| Focus | None | — | `textColor.subtle` | `textColor.subtle` | `textColor.subtle` |
-| Active | Positive | — | `textColor.subtle` | `textColor.subtle` | `textColor.subtle` |
-| Active | Negative | — | `textColor.subtle` | `textColor.subtle` | `textColor.subtle` |
-| Any | Disabled | — | `textColor.interactive.disabled` | `textColor.interactive.disabled` | `textColor.interactive.disabled` |
+### Accessibility
 
-**Helper text color per validation state:**
-
-| `validationState` | Helper text color |
+| Aspect | Implementation |
 |---|---|
-| None (Active / Hover / Focus) | `textColor.subtle` |
-| Negative | `textColor.negative` |
-| Positive | `textColor.positive` |
-| Disabled | `textColor.interactive.disabled` |
+| Role | Native `<input>` (with `<div>` wrappers for layout). Validation outline lives on the outer wrapper via `aria-invalid` and `data-valid` attribute selectors. |
+| Keyboard | Native input focus + caret. Tab navigates through `leadingTab` / input / `trailingTab` children. |
+| ARIA attributes | `aria-invalid` is passed through `InputRoot` from `props['aria-invalid']` and used by the validation-outline selector. No automatic association between Input and an external `<label>` — the consumer must wire `htmlFor`/`id` or `aria-labelledby` themselves. |
+| Focus management | `:focus-within` on the outer wrapper drives the focus ring; `:focus-within:not(.disabled)` so disabled inputs don't draw focus styling. |
+| Screen reader | Reads input value + placeholder. Helper text is not auto-associated via `aria-describedby` (see Gap #5). |
 
 ---
 
 ### Slots
 
-| Slot | Figma prop | React prop | Content | Constraints |
-|---|---|---|---|---|
-| Label | `label` (FormGroupLabel) | — (consumer-rendered) | Label text string | `content/caption-strong` (xs, medium, leading-2); color: `textColor.subtle` |
-| Mandatory marker | `variant: Mandatory` (FormGroupLabel) | — (consumer-rendered) | "(mandatory)" text + asterisk | asterisk color: `textColor.negative` |
-| Tooltip | `showTooltip` (FormGroupLabel) | — (consumer-rendered) | Info icon | 12px icon |
-| Leading tab | `showLeadingTab` | `leadingTab: ReactNode` | Dropdown trigger (e.g., country selector) | Generic slot; separator auto-inserted after if present. **⚠️ Does NOT inherit `font/family/body` — consumer must add `font-body` to tab content. See Gaps.** |
-| Leading icon | `showLeadingIcon`, `leadingIcon` | `leadingIcon: ReactNode` | 16px icon | Forced to 1rem via `.input-leading-icon`; color: `colors.icon.subtle` (default), `colors.icon.disabled` (disabled) |
-| Leading text | `showLeading`, `leading` | `leading: string` | Prefix string (e.g., "+1") | Inherits container color; `textContentStyles` applied (Inter, 14px, medium) |
-| Input value | `value`, `placeholder` | native `value` / `placeholder` | Text input | Full-width (`flex: 1`); value: `textColor.subtle`; placeholder: `textColor.subtler` |
-| Clear button | _(Focus state only)_ | — (not implemented) | Icon / Clear (✕, 16px) | Figma-only; appears in Focus state; no React equivalent — see Gaps |
-| Trailing text | `showTrailing`, `trailing` | `trailing: string` | Suffix string (e.g., "USD") | `margin-left: auto`; inherits container color; `textContentStyles` applied (Inter, 14px, medium) |
-| Trailing tab | `showTrailingTab` | `trailingTab: ReactNode` | Dropdown trigger (e.g., currency selector) | Generic slot; separator auto-inserted before if present. **⚠️ Does NOT inherit `font/family/body` — consumer must add `font-body` to tab content. See Gaps.** |
-| Helper text | `showHelperText`, `helperText` | — (consumer-rendered) | Hint / error / success message | `content/caption` (xs, normal, leading-2); color varies by validation state |
+| Figma slot | Figma prop / toggle | React equivalent | Description |
+|---|---|---|---|
+| Leading tab | `showLeadingTab` + `_Input Inline` instance | `leadingTab?: React.ReactNode` prop on `Input` | A small inline button (e.g. country code selector). Followed by an automatic `<Separator orientation="vertical" />` from `@/components/Separator`. |
+| Leading icon | `showLeadingIcon` + `leadingIcon: ReactNode` | `leadingIcon?: React.ReactNode` | Rendered inside `.input-leading-icon` (16×16) before the input field |
+| Leading text | `showLeading` + `leading: string` | `leading?: string` | Static text label rendered before the input (e.g. `+00`) |
+| Input field | — _(native)_ | `<input>` with `...props` from `Input` | Receives `type`, `value`, `onChange`, etc. via `...props`. Always rendered. |
+| Trailing text | `showTrailing` + `trailing: string` | `trailing?: string` | Static text label rendered after the input (e.g. `USD`) |
+| Trailing tab | `showTrailingTab` + `_Input Inline` instance | `trailingTab?: React.ReactNode` prop on `Input` | Optional inline trailing control. Preceded by an automatic `<Separator orientation="vertical" />`. |
+| Form group label | `_Form Group Label` sub-component | _(not exposed in React)_ — see Gap #3 | Figma always pairs the input with a label + optional tooltip. React doesn't ship a `FormGroupLabel`; consumer composes with `<Label>` from `@/components/Label`. |
+| Helper text | `showHelperText` + `helperText: string` | _(not exposed)_ — see Gap #5 | Figma always renders helper text below the field with an info icon and validation-state coloring. React provides no equivalent slot. |
+
+---
+
+### Animation & motion
+
+| Transition | Property | Source |
+|---|---|---|
+| Color | bg, border, text, shadow | `transitionColorsStyles(theme)` on `.input-container-wrapper`, `.input-container`, `.input-wrapper`, `.input-leading`, `.input-trailing`, `.input-leading-icon`, `.input` |
+
+No enter/exit animations.
+
+---
+
+### Responsive behavior
+
+The component is `width: 100%` and fills its container. Internal layout (flex row) doesn't change across breakpoints.
 
 ---
 
@@ -166,157 +238,142 @@
 
 ### Component metadata
 
-- **File:** `lib/components/input/index.tsx`
-- **Styles:** `lib/components/input/styles.js`
-- **Import:** `import { Input, InputRoot, InputSearch } from 'lib/components/input'`
-- **Exports:** `Input`, `InputRoot`, `InputSearch` (named); also `InputProps`, `InputSearchProps` (interfaces)
-- **Ref:**
-  - `InputRoot` → forwarded to `HTMLDivElement`
-  - `Input` → forwarded to `HTMLInputElement`
-  - `InputSearch` → forwarded to `HTMLInputElement`
-- **Dependencies:** `Separator` (`../Separator`), `LinkButton` (`../LinkButton`), `@radix-ui/react-slot`
+| | |
+|---|---|
+| **File** | `lib/components/Input/index.tsx` |
+| **Styles** | `lib/components/Input/styles.js` |
+| **Import** | `import { Input, InputRoot, InputSearch } from '@/components/Input'` |
+| **Storybook story** | `src/components/Input/Input.stories.tsx`; `src/components/InputSearch/InputSearch.stories.tsx` |
+| **Dependencies** | `Separator` (from `lib/components/Separator`); `LinkButton` (from `lib/components/LinkButton`, used by `InputSearch`); `Slot` from `@radix-ui/react-slot` |
+| **Ref forwarded** | Yes — `InputRoot` → `HTMLDivElement`, `Input` → `HTMLInputElement`, `InputSearch` → `HTMLInputElement`. All via `React.forwardRef`. |
+
+---
+
+### Exported API
+
+| Export | Element | Notes |
+|---|---|---|
+| `InputRoot` | `<div>` (or any element via `asChild`) | Validation outline owner. Props: `asChild?`, `disabled?`, `isValid?`, `aria-invalid?`, plus `<div>` HTML attrs. Sets `data-valid` from `isValid`. |
+| `Input` | `<div class="input-container">` wrapping `<input>` | The field row. Props: `leadingIcon?`, `leading?`, `leadingTab?`, `trailing?`, `trailingTab?`, plus all `<input>` HTML attrs (forwarded to the native input via `...props`). |
+| `InputSearch` | Composed — same wrapper + container + a built-in search icon + a brand `LinkButton` trigger | Props: `isLoading?`, plus all `<input type="search">` attrs |
 
 ---
 
 ### CSS class architecture
 
-This component does **not** use CVA. Classes are applied directly.
+| Class | Lives in | Purpose |
+|---|---|---|
+| `.input-container-wrapper` | applied by `InputRoot` | Outer wrapper. Owns the validation outline (`focus-within`, `[aria-invalid]`, `[data-valid]`). |
+| `.input-container` | applied by `Input` | Visual frame — bg, border, hover/disabled behavior. |
+| `.input-wrapper` | applied by `Input` inside `.input-container` | Field row — `min-height: 36px`, padding, gap. |
+| `.input-leading-icon` | applied inside `.input-wrapper` | 16×16 icon slot before the input |
+| `.input-leading`, `.input-trailing` | applied inside `.input-wrapper` | Static text slots |
+| `.input` | applied to native `<input>` | Field-level reset + typography + autofill suppression |
+| `.disabled` | toggled on both wrapper + container | Disabled state |
 
-| CSS class | Applied by | styles.js lines | Role |
-|---|---|---|---|
-| `.input-container-wrapper` | `InputRoot`, `InputSearch` (outer div) | 3–26 | Outer shell; handles focus-ring outline, validation outlines, disabled cursor |
-| `.disabled` | Modifier on `.input-container-wrapper` when `disabled=true` | 19–21 | Signals disabled; suppresses focus/validation styles |
-| `.input-container` | `Input` (inner div), `InputSearch` (inner div) | 28–65 | Border, bg, overflow clip, hover/disabled colors |
-| `.input-wrapper` | `Input` inner div, `InputSearch` inner div | 92–102 | Flex row holding icon + leading + input + trailing; min-height, padding, gap |
-| `.input` | `<input>` element | 103–143 | Native input; text color, placeholder, autofill override, search cancel button |
-| `.input-leading-icon` | Wrapper div around `leadingIcon` | 72–87 | Centers icon; forces 16px size; sets `colors.icon.subtle` color |
-| `.input-leading` | `<span>` around `leading` prop | 67–71 | Inherits container color; `textContentStyles` |
-| `.input-trailing` | `<span>` around `trailing` prop | 67–71, 88–90 | Inherits container color; `margin-left: auto`; `textContentStyles` |
+InputSearch reuses `.input-container-wrapper` and `.input-container` directly — it doesn't have its own class namespace.
 
 ---
 
 ### Component split — which props go where
 
-> ⚠️ **Critical usage note:** `InputRoot` and `Input` are two separate components with distinct prop sets. All slot props (`leadingTab`, `trailingTab`, `leadingIcon`, `leading`, `trailing`) belong on **`Input`**, not on `InputRoot`. Passing them to `InputRoot` silently drops them — they spread into `...props` as unknown HTML attributes and never render.
-
-**Correct pattern:**
-```tsx
-<InputRoot>                        {/* handles focus ring, validation outline, disabled cursor */}
-  <Input
-    leadingTab={<MyTab />}         {/* ✓ slot props on Input */}
-    leadingIcon={<MyIcon />}
-    trailing="USD"
-    trailingTab={<MyTrailingTab />}
-    placeholder="Enter value"
-    value={value}
-    onChange={...}
-  />
-</InputRoot>
-```
-
-**Wrong pattern (tabs will not render):**
-```tsx
-<InputRoot leadingTab={<MyTab />}> {/* ✗ InputRoot has no leadingTab prop */}
-  <Input />
-</InputRoot>
-```
+| Concern | Component | Why |
+|---|---|---|
+| Validation outline | `InputRoot` | Listens to `aria-invalid` / `data-valid` on the outer wrapper so children don't need to be invalidation-aware |
+| Field layout (leading tab → leading icon → leading text → input → trailing text → trailing tab) | `Input` | Single component that orchestrates the row, including the auto-inserted `<Separator orientation="vertical">` flanking tabs |
+| Search affordance (built-in search icon + submit button) | `InputSearch` | Common compound — pre-wires a `LinkButton variant="brand"` trigger that consumes `isLoading` to drive its spinner |
 
 ---
 
 ### Prop mapping
 
-| Figma variant / prop | React prop | Component | Type | Default | Notes |
-|---|---|---|---|---|---|
-| `state: Placeholder` | _(no prop)_ | — | — | — | CSS `:placeholder-shown` / default; no React prop |
-| `state: Hover` | _(no prop)_ | — | — | — | CSS `:hover:not(.disabled)` |
-| `state: Focus` | _(no prop)_ | — | — | — | CSS `:focus-within:not(.disabled)` on wrapper |
-| `state: Active` | _(no prop)_ | — | — | — | Represented by having a value; no React prop |
-| `validationState: Negative` | `aria-invalid="true"` | `InputRoot` | `React.AriaAttributes['aria-invalid']` | — | Triggers `outlineColor.negative-bold` outline |
-| `validationState: Positive` | `isValid={true}` → `data-valid="true"` | `InputRoot` | `boolean \| undefined` | `undefined` | Triggers `outlineColor.positive-bold` outline |
-| `validationState: None` | _(default — neither attr set)_ | — | — | — | |
-| `isDisabled` | `disabled` | `InputRoot` + `Input` | `boolean` | `false` | Pass on both; `InputRoot` adds `.disabled` class for cursor; `Input` disables the native `<input>` |
-| `showLeadingTab` | `leadingTab` present | **`Input`** ⚠️ | `ReactNode \| undefined` | `undefined` | Tab renders if prop is truthy; Separator auto-inserted after |
-| `showTrailingTab` | `trailingTab` present | **`Input`** ⚠️ | `ReactNode \| undefined` | `undefined` | Tab renders if prop is truthy; Separator auto-inserted before |
-| `showLeadingIcon` | `leadingIcon` present | **`Input`** ⚠️ | `ReactNode \| undefined` | `undefined` | Icon renders if prop is truthy |
-| `showLeading` | `leading` present | **`Input`** ⚠️ | `string \| undefined` | `undefined` | Text renders if prop is truthy |
-| `showTrailing` | `trailing` present | **`Input`** ⚠️ | `string \| undefined` | `undefined` | Text renders if prop is truthy |
-| `placeholder` | `placeholder` | `Input` | `string` | — | Native HTML attribute on `<input>` |
-| `value` | `value` | `Input` | `string` | — | Native HTML attribute on `<input>` |
+| Figma variant prop | React prop | Type | Default | Notes |
+|---|---|---|---|---|
+| `state: Placeholder \| Active \| Hover \| Focus` | _(CSS pseudo-classes + native input state)_ | — | — | No React prop; CSS handles all four via `:focus-within`, `:hover`, native input value |
+| `validationState: None \| Positive \| Negative` | `isValid?: boolean` (InputRoot) + `aria-invalid` (Input or wrapper) | `boolean` / standard ARIA value | `undefined` / unset | `isValid=true` → green outline; `aria-invalid="true"` → red outline |
+| `isDisabled: boolean` | `disabled` (native HTML attr on `<input>`) | `boolean` | `false` | Also passed to `InputRoot` to apply `.disabled` class to the wrapper |
+| `showLeadingTab` | `leadingTab` (truthy) | `React.ReactNode` | undefined | When passed, also renders an auto-Separator after the tab |
+| `showTrailingTab` | `trailingTab` (truthy) | `React.ReactNode` | undefined | When passed, also renders an auto-Separator before the tab |
+| `showLeadingIcon` | `leadingIcon` (truthy) | `React.ReactNode` | undefined | When passed, renders inside `.input-leading-icon` |
+| `showLeading` | `leading` (truthy string) | `string` | undefined | When passed, renders inside `.input-leading` |
+| `showTrailing` | `trailing` (truthy string) | `string` | undefined | When passed, renders inside `.input-trailing` |
+| `showHelperText` + `helperText` | _(not exposed)_ | — | — | See Gap #5 |
+| `leadingIcon` (ReactNode) | `leadingIcon` | same | undefined | Direct mapping |
+| `placeholder` / `value` | native HTML attrs | string | undefined | Passed via `...props` to native input |
 
 ---
 
-### Behavior-only props (no Figma equivalent)
+### Behavior-only props
 
-| Prop | Component | Type | Notes |
+Passed via `...props`:
+
+| Prop | Type | Where it applies | Notes |
 |---|---|---|---|
-| `asChild` | `InputRoot` | `boolean` | Radix UI Slot pattern; renders as child element instead of `<div>` |
-| `className` | All | `string` | Merged at root element |
-| `ref` | All | forwarded | To `HTMLDivElement` (InputRoot) or `HTMLInputElement` (Input, InputSearch) |
-| `isLoading` | `InputSearch` | `boolean` | Passes to internal `LinkButton`; no Figma equivalent |
-| `onChange`, `onBlur`, `onFocus` | `Input`, `InputSearch` | event handlers | Native HTML attributes via `...props` spread |
-| `type` | `Input` | `string` | No default set — browsers default to `text`; `InputSearch` hardcodes `type="search"` |
-| `name`, `id`, `autoComplete`, `readOnly` | `Input`, `InputSearch` | native attrs | Via `...props` spread |
-| `aria-label`, `aria-describedby`, `aria-invalid` | All | ARIA attrs | `aria-invalid` on `InputRoot` drives negative validation outline |
+| `className` | `string` | All three components | Merged via `cn()` |
+| `ref` | forwarded | See Component metadata | Standard |
+| `aria-invalid` | `'true' \| 'false'` (string) | `InputRoot`, `Input` | InputRoot reads `props['aria-invalid']` explicitly so the outline rule fires |
+| `disabled` | `boolean` | All three | Triggers `.disabled` class + native disabling |
+| `type` | `string` | `Input` (passed through) / `InputSearch` (forces `"search"`) | Standard |
+| `onChange` / `onFocus` / `onBlur` | native | passed through | Standard |
+| `value` / `defaultValue` | string | passed through | Standard |
 
 ---
 
 ### Shared helpers used in styles.js
 
-| Helper | What it does | Received from lib/styles.js |
+| Helper | Source | Used in |
 |---|---|---|
-| `transitionColorsStyles(theme)` | Smooth transitions on `color`, `background-color`, `border-color`, `outline-color` | Yes — applied to `.input-container-wrapper`, `.input-container`, `.input-leading`, `.input-trailing`, `.input-leading-icon`, `.input-wrapper`, `.input` |
-| `textContentStyles(theme)` | Sets `fontFamily.body`, `fontSize.sm` (14px), `fontWeight` medium (500), `lineHeight.4` (20px) | Yes — applied to `.input-leading`, `.input-trailing`, `.input` |
+| `theme(...)` | Tailwind plugin context | Token reads |
+| `transitionColorsStyles(theme)` | Tailwind plugin util | Smooth color transitions on container, wrapper, input, leading/trailing slots |
+| `textContentStyles(theme)` | Tailwind plugin util | Applies the `text-content` composite typography to `.input` and `.input-leading` / `.input-trailing` |
+
+---
+
+### Storybook coverage
+
+`src/components/Input/Input.stories.tsx` exports **13 stories**:
+
+| Story | Demonstrates |
+|---|---|
+| `SimpleInput` | Baseline placeholder |
+| `ValidInput` | `InputRoot isValid` → green outline |
+| `InvalidInput` | `aria-invalid="true"` → red outline |
+| `DisabledInput` | `disabled` (empty) |
+| `DisabledInputWithValue` | `disabled` (filled) |
+| `LeadingIconInput` | `leadingIcon` prop |
+| `LeadingIconDisabledInput` | `leadingIcon` + `disabled` |
+| `LeadingInput` | `leading="+00"` static text |
+| `LeadingTabInput` | `leadingTab` inline button (country code selector) |
+| `LeadingTabDisabledInput` | `leadingTab` + `disabled` |
+| `LeadingWithLeadingTabInput` | `leading` + `leadingTab` combined |
+| `LeadingWithTrailingTabInput` | `leading` + `trailingTab` combined |
+| `LeadingWithTrailingTabDisabledInput` | Above + `disabled` |
+
+`InputSearch` has its own story file at `src/components/InputSearch/InputSearch.stories.tsx`.
+
+**Missing stories:** no `trailingIcon` story (the prop doesn't exist in React — only the Figma `trailingIcon` slot type), no Positive + Hover combination, no plain `trailing` text without a tab.
 
 ---
 
 ### Gaps
 
-**Figma tokens not in token map:**
+Mismatches between the Figma node, the React implementation, and adjacent project conventions. Gap #1 is the standardized fallback marker required by the skill when Code Connect is unavailable.
 
-- `color/border/negative-bold` — Used in Figma as a 1px border on the outer wrapper for `validationState: Negative`. Not listed in token-map.md as a Figma foundation token (`borderColor.negative-bold` exists as a Tailwind-only path). styles.js uses `outlineColor.negative-bold` instead — same resolved value, different CSS property and theme namespace.
-- `color/border/positive-bold` — Same situation as above for `validationState: Positive`.
-- `color/bg/transparent` — Referenced in Figma for leading/trailing tab backgrounds (`rgba(255,255,255,0)`). Token map notes this only exists in the Claude Foundation library, not this Foundation file.
-- `spacing/1-5` (6px) — Used in Figma for the vertical gap between the label, input wrapper, and helper text layers. Not listed in token-map.md spacing table. Resolves to Tailwind `gap-1.5`.
-- `spacing/0-5` (2px) — Used in Figma for helper text icon vertical padding (`py-[var(--spacing/0-5,2px)]`). Not listed in token-map.md. Resolves to Tailwind `py-0.5`.
+| # | Gap | Figma | React |
+|---|---|---|---|
+| 1 | **Code Connect API unavailable** — `mcp__figma__get_context_for_code_connect` returned 403 / Developer-seat-required. The Variants section was derived from the React source + the `InputTextProps` type signature returned by `get_design_context` (rich codegen response) + `get_variable_defs` rather than the full Figma variant tree. Re-scan with a Developer seat to replace any rows marked `_(inferred)_`. | — | — |
+| 2 | **One Figma component, three React components** | Single "Input Text" symbol with slot toggles | React splits into `InputRoot` (outline), `Input` (field + slots), and `InputSearch` (composed search affordance). The split is sensible for composition flexibility but isn't surfaced in Figma. |
+| 3 | **`_Form Group Label` is internal in Figma, separate in React** | Figma always nests `_Form Group Label` (label + optional `(mandatory)` + asterisk + tooltip trigger) above the field | React provides no `FormGroupLabel` export — consumer uses `<Label>` from `@/components/Label` and wires the layout manually. The Figma description even says `_Form Group Label` is "Not for direct use — composed automatically", but in React it's a manual composition. |
+| 4 | **Validation outline tokens are Tailwind-only** | Figma references `color/border/negative-bold` / `color/border/positive-bold` as the border colors in Active+Negative / Active+Positive symbols | styles.js uses `outlineColor.negative-bold` / `outlineColor.positive-bold` — these are **outline** tokens (not border) and `token-map.md` flags them as Tailwind-only with no Figma equivalent. Figma also uses `border-2 focus-ring` for the Focus + None state instead of an outline — same `border` vs `outline` pattern as LinkButton/ToggleFilter. |
+| 5 | **`helperText` slot has no React equivalent** | Figma's Input Text always renders helper text below the field, with an info icon and validation-state coloring | React Input has no `helperText` prop. Consumer must render their own helper text outside `Input`. No automatic `aria-describedby` wiring either — the Input can't expose itself to a helper-text element for screen readers. |
+| 6 | **Default validation messages icon (info / check / x) is Figma-only** | Figma renders a 12×12 status icon next to helper text that changes per validation state | React has no equivalent. Tied to Gap #5. |
+| 7 | **`_Input Inline` sub-component is internal in Figma** | Figma codegen references `_Input Inline` (the inline button used for country code / currency tabs) and notes "Not for direct use — use Input Text instead" | React has no `InputInline` export. The stories pass a hand-rolled `<button>` for `leadingTab` (see `inputInline()` helper in `Input.stories.tsx`). A dedicated component would be a more discoverable API. |
+| 8 | **`type` prop is open** | Figma is a text input | `Input` accepts `type` via `...props` (text, email, password, number, etc.). `InputSearch` forces `type="search"` — that's the only enforced type. |
+| 9 | **No password-mode toggle** | n/a | A common form field is "password with visible toggle". Neither Figma nor React provide it — consumer must compose with a `trailingTab` button. Worth surfacing. |
+| 10 | **`textColor.subtler` and `icon/color/subtle` collide on hex** | Both resolve to `#71717a` | Same naming inconsistency noted on ToggleFilter Gap #11. |
+| 11 | **InputSearch couples to LinkButton's `variant="brand"`** | n/a | `InputSearch` always renders a brand `LinkButton` as its submit affordance. Consumers can't change the variant or replace the trigger. If a search box appears on a brand-tinted background, the brand trigger may not have enough contrast. |
+| 12 | **`isValid={false}` vs `aria-invalid="true"` overlap** | n/a | The story `InvalidInput` passes BOTH `isValid={false}` on `InputRoot` and `aria-invalid="true"`. The component logic prioritizes `aria-invalid` (red outline wins because `[aria-invalid="true"]` rule comes after `[data-valid="true"]` in source order — but `isValid={false}` doesn't set `data-valid="false"`, it sets it to `false` literally, which doesn't match `[data-valid="true"]`). Documentation should clarify the canonical pattern: prefer `aria-invalid` alone for native-form alignment. |
 
-**Figma variants not in React:**
+---
 
-- `state: Placeholder | Active | Hover | Focus` — React has no `state` prop; driven entirely by CSS pseudo-classes and native browser state.
-- `validationState: None | Positive | Negative` — React uses `aria-invalid="true"` (negative) and `isValid={true}` / `data-valid="true"` (positive) on `InputRoot`, not a `validationState` prop.
-- `isDisabled` — Maps to native `disabled` HTML attribute; React adds a `.disabled` CSS class.
-- `showHelperText` / `showLeading` / `showLeadingIcon` / `showLeadingTab` / `showTrailing` / `showTrailingTab` — Figma uses explicit boolean toggles. React renders slots only when the corresponding prop is truthy (prop-presence pattern, no booleans).
-- `FormGroupLabel` (label text, "(mandatory)" text, required asterisk, info tooltip) — Figma composes this automatically above every Input. React does not; consumers must render a label element themselves.
-
-**React props not in Figma:**
-
-- `InputSearch` component — search-specific variant with built-in search icon, `type="search"`, and a `LinkButton` trigger. No Figma equivalent for this sub-type.
-- `InputRoot.asChild` — Radix UI Slot pattern; no Figma representation.
-- `InputRoot.isValid` — drives `data-valid` attribute for positive validation.
-- `InputSearch.isLoading` — controls `LinkButton` loading state; no Figma equivalent.
-- All native HTML input attributes (`name`, `autoComplete`, `readOnly`, etc.).
-
-**theme() paths with no Figma token:**
-
-- `outlineColor.negative-bold` — token-map.md confirms no Figma foundation token. Nearest Figma concept is `color/border/negative-bold` (rendered as a border, not outline). Resolved value is identical (`#dc2626`).
-- `outlineColor.positive-bold` — same as above. Nearest Figma concept is `color/border/positive-bold`. Resolved value: `#16a34a`.
-- `fontSize.base` — used in `.input-leading-icon` to size SVG / MUI icons (16px = 1rem). No Figma variable; code-only.
-
-**Font inheritance for tab slots:**
-
-- **`leadingTab` / `trailingTab` font family** — Figma sets `font/family/body` (`'Inter:Medium'`) explicitly on all text inside the leading and trailing Popover triggers. In React, `leadingTab` and `trailingTab` are raw `ReactNode` slots rendered directly inside `.input-container` — outside `.input-wrapper`. The component does not apply `textContentStyles` (or any `fontFamily`) to the `.input-container` root, so tab content inherits Tailwind's preflight system font (`ui-sans-serif, system-ui`) rather than `fontFamily.body` (Inter). **Fix:** add `font-body` class to text elements inside any `leadingTab` / `trailingTab` content you pass.
-
-  ```tsx
-  leadingTab={
-    <div className="flex items-center gap-1 px-3 py-2">
-      <span className="font-body text-sm font-medium text-subtler">US</span>
-      {/* ... */}
-    </div>
-  }
-  ```
-
-**Visual spec mismatches:**
-
-- **Base container border color**: ~~styles.js uses `theme('borderColor.default')` → zinc-200 (`#e4e4e7`). Figma consistently uses `color/border/bold` → `borderColor.bold` → zinc-300 (`#d4d4d8`) for both default and hover states.~~ **Fixed** — styles.js now uses `theme('borderColor.bold')` (`#d4d4d8`) to match Figma.
-- **Validation state border vs outline**: Figma renders `validationState: Negative/Positive` as a 1px **border** on a wrapping `<div>`. React implements this as a 1px **outline** on `.input-container-wrapper`. CSS `outline` doesn't affect layout; `border` does. Visually similar but structurally different.
-- **Clear button missing**: Figma shows an "Icon / Clear" (✕, 16px) inside the input area in the `state: Focus` variant, positioned between the value text and trailing text. React does not implement this icon or its click-to-clear behavior.
-- **`borderColor.bold` not used in hover**: Figma shows the container border remaining `color/border/bold` on hover (background changes, border stays). React styles do not explicitly re-assert a border on hover, so the border stays at whatever the base `borderColor.default` is — still mismatched from Figma's `borderColor.bold`.
+> **Generated by** `component-context-generator` skill (patched 2026-05-12 with Code Connect 403 fallback) against Figma node `703-11630` of file `eKAqJtRHEFoa6FOPw3xzCw`. Cross-referenced with `lib/design-system/token-map.md`, `src/components/Input/Input.stories.tsx`, and `src/components/InputSearch/InputSearch.stories.tsx`.
